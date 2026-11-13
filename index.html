@@ -1,0 +1,1660 @@
+<!doctype html>
+<html lang="fr" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Drakkar</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%23000%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2710%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%272%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%273%27 fill=%27%23fff%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+/* required styles */
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+/* Prevents IE11 from highlighting tiles in blue */
+.leaflet-tile::selection {
+	background: transparent;
+}
+/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+/* hack that prevents hw layers "stretching" when loading new tiles */
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
+/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container img.leaflet-tile {
+	/* See: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */
+	mix-blend-mode: plus-lighter;
+}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	/* Fallback for FF which doesn't support pinch-zoom */
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+/* control positioning */
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+/* zoom and fade animations */
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+/* cursors */
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+/* marker & overlays interactivity */
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+
+/* visual tweaks */
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+/* general typography */
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+/* general toolbar styles */
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+/* zoom control */
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+/* layers control */
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+/* Default icon URLs */
+.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
+	background-image: url(images/marker-icon.png);
+	}
+
+
+/* attribution and scale controls */
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+/* popup */
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+/* div icon */
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+/* Tooltip */
+/* Base styles for the element that has a tooltip */
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+/* Directions */
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+/* Printing */
+
+@media print {
+	/* Prevent printers from removing background-images of controls. */
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+
+/* Layout : filtres | liste des sites | carte ; la fiche d'un site s'ouvre en panneau par-dessus la carte */
+
+/* Layout : barre haute | filtres + liste triée par priorité d'appel | carte ; la fiche d'appel s'ouvre en panneau à droite */
+:root{--bg:#000000; --panel:#0a0a0a; --raised:#111111; --fg:#f2f2ee; --muted:#8e8e89; --line:#262626; --blue:#f2f2ee; --blue-soft:#1a1a1a; --red:#ff4d4f; --red-soft:#2a1010; --amber:#e9a23b; --amber-soft:#2a2010; --green:#45c48f; --green-soft:#0f2a1e; --violet:#a58cff; --teal:#4cc4d8; --grey:#62625e; --ink:#bdbdb8; --land:#0a0a0a; --land-line:#3a3a37; --shade:rgba(0,0,0,.6); color-scheme:dark;
+  --sans:"Inter Tight","Helvetica Neue",Arial,system-ui,sans-serif;
+  --disp:"Space Grotesk","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+:root[data-theme="light"]{--bg:#ffffff; --panel:#f5f5f3; --raised:#ffffff; --fg:#0a0a0a; --muted:#5d5d5a; --line:#dcdcd8; --blue:#0a0a0a; --blue-soft:#ededea; --red:#d92128; --red-soft:#fdebec; --amber:#a86400; --amber-soft:#fbf1df; --green:#0f8a5f; --green-soft:#e3f5ee; --violet:#6b3fd1; --teal:#0a7f93; --grey:#8a8a86; --ink:#2b2b29; --land:#f1f1ee; --land-line:#cfcfca; --shade:rgba(0,0,0,.35); color-scheme:light}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.45;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.app{display:grid;grid-template-rows:auto 1fr;grid-template-columns:minmax(0,1fr);height:100%;min-height:0}
+header.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-size:18px;font-weight:700;letter-spacing:-.01em;margin:0}
+.brand span{font-size:12px;color:var(--muted)}
+nav.tabs{display:flex;gap:0;border:1px solid var(--line);max-width:100%;min-width:0;overflow-x:auto}
+header.top>*{min-width:0}
+.brand{flex-wrap:wrap}
+nav.tabs button{white-space:nowrap;flex:none}
+.filters .more{max-height:36vh;overflow-y:auto;padding-right:4px}
+nav.tabs button{background:var(--bg);border:0;border-right:1px solid var(--line);padding:7px 14px;font-weight:500}
+nav.tabs button:last-child{border-right:0}
+nav.tabs button[aria-current="true"]{background:var(--fg);color:var(--bg)}
+.kpis{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+.kpi{display:flex;flex-direction:column;line-height:1.15}
+.kpi b{font-family:var(--mono);font-size:17px;font-weight:500}
+.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.sync{font-size:11px;color:var(--muted)}
+
+main.carte{display:grid;grid-template-columns:minmax(300px,400px) 1fr;min-height:0;position:relative}
+.side{display:block;overflow-y:auto;min-height:0;border-right:1px solid var(--line);background:var(--bg)}
+.filters{padding:12px 14px 10px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.filters.collapsed .more{display:none}
+.frow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#q{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);padding:8px 10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);padding:4px 9px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px;user-select:none}
+.chip i{width:9px;height:9px;display:inline-block;background:var(--c,var(--grey))}
+.chip .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--fg);background:var(--panel);font-weight:600}
+.chip[aria-pressed="false"]{color:var(--muted)}
+.chip[aria-pressed="false"] i{opacity:.35}
+.flabel{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.filters select,.filters input[type=number]{border:1px solid var(--line);background:var(--bg);padding:6px 8px;min-width:0}
+.filters input[type=range]{flex:1;min-width:80px;accent-color:var(--blue)}
+.linkbtn{background:none;border:0;color:var(--blue);padding:0;text-decoration:underline;font-size:12.5px}
+.count{position:sticky;top:0;z-index:3;background:var(--bg);padding:8px 14px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.cards{min-height:0}
+.script{border:1px solid var(--line);background:var(--raised);padding:10px 12px;font-size:13.5px;line-height:1.5;margin-top:8px}
+.script b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px;font-weight:600}
+.navrow{display:flex;gap:6px;margin-top:8px}
+.page ol.guide{max-width:74ch;padding-left:22px;display:grid;gap:10px;font-size:15px}
+.card{display:grid;grid-template-columns:38px 1fr auto;gap:2px 10px;width:100%;text-align:left;background:var(--bg);border:0;border-bottom:1px solid var(--line);padding:10px 14px}
+.card:hover{background:var(--panel)}
+.card[aria-current="true"]{background:var(--blue-soft)}
+.card .pr{grid-row:1/4;font-family:var(--mono);font-size:15px;font-weight:500;align-self:start;border:1px solid var(--line);text-align:center;padding:5px 0;background:var(--raised)}
+.card .pr.hi{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.card .t{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.card .d{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.card .m,.card .o{grid-column:2/4;font-size:12.5px;color:var(--muted);min-width:0;overflow-wrap:anywhere}
+.card .o b{color:var(--fg);font-weight:500}
+.tag{display:inline-block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;margin-right:6px;border:1px solid var(--c,var(--line));color:var(--c,var(--muted));vertical-align:1px;white-space:nowrap}
+.tag.fill{background:var(--c);color:var(--bg)}
+.tag.tgt{--c:var(--green)} .tag.rec{--c:var(--red)}
+.more-btn{display:block;width:100%;padding:12px;border:0;border-bottom:1px solid var(--line);background:var(--panel);font-weight:500}
+.empty{padding:28px 18px;color:var(--muted)}
+
+#map{min-height:0;height:100%;background:var(--bg)}
+.leaflet-container{background:var(--bg);font-family:var(--sans)}
+.tip{background:var(--fg);color:var(--bg);border:0;border-radius:0;box-shadow:none;font-size:12px;padding:3px 7px}
+.tip:before{display:none}
+.leaflet-bar,.leaflet-bar a{border-radius:0!important}
+.leaflet-bar a{background:var(--raised);color:var(--fg);border-bottom-color:var(--line)}
+.legend{position:absolute;left:10px;bottom:10px;z-index:500;background:var(--raised);border:1px solid var(--line);padding:8px 10px;font-size:11.5px;display:grid;gap:3px;max-width:230px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:9px;height:9px;display:inline-block;flex:none}
+.legend i.rond{border-radius:50%}
+.mapwrap{position:relative;min-height:0}
+
+/* fiche */
+.fiche{position:absolute;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--bg);border-left:1px solid var(--line);z-index:1100;display:grid;grid-template-rows:auto 1fr;min-height:0;box-shadow:-12px 0 32px rgba(13,20,38,.08)}
+.fiche header{padding:14px 16px 12px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.fiche header .row{display:flex;gap:10px;align-items:flex-start}
+.fiche h2{font-size:18px;line-height:1.2;margin:0;font-weight:700;text-wrap:balance;flex:1;min-width:0;overflow-wrap:anywhere}
+.x{border:1px solid var(--line);background:var(--bg);width:32px;height:32px;flex:none;font-size:16px;line-height:1}
+.fiche .where{color:var(--muted);font-size:13px}
+.fbody{overflow:auto;min-height:0;padding:0 16px 28px}
+.sec{padding:14px 0;border-bottom:1px solid var(--line)}
+.sec:last-child{border-bottom:0}
+.sec h3{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px;font-weight:600}
+.callbox{border:1px solid var(--fg);padding:12px;display:grid;gap:4px;background:var(--raised)}
+.callbox + .callbox{margin-top:8px;border-color:var(--line)}
+.callbox .who{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.callbox .role{font-size:12.5px;color:var(--muted)}
+.telrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+.tel{font-family:var(--mono);font-size:20px;font-weight:500;letter-spacing:.01em;user-select:all}
+.tel.none{font-family:var(--sans);font-size:13.5px;color:var(--amber);font-weight:500}
+.btn{border:1px solid var(--line);background:var(--bg);padding:5px 10px;font-size:12.5px;text-decoration:none;color:var(--fg);display:inline-block}
+.btn:hover{border-color:var(--fg)}
+.btn.pri{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.btn.on{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.srcline{font-size:11.5px;color:var(--muted)}
+.why{font-size:14.5px;line-height:1.5;margin:0;max-width:62ch}
+.fi{display:inline-block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border:1px solid;margin-bottom:6px}
+.fi.v{color:var(--green);background:var(--green-soft)} .fi.d{color:var(--blue);background:var(--blue-soft)} .fi.c{color:var(--amber);background:var(--amber-soft)}
+ul.ask{margin:8px 0 0;padding-left:18px;display:grid;gap:3px}
+.kv{display:grid;grid-template-columns:minmax(110px,34%) 1fr;gap:5px 12px;font-size:13.5px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.linkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin-top:10px}
+.linkgrid a{border:1px solid var(--line);padding:7px 9px;text-decoration:none;color:var(--fg);font-size:13px;font-weight:500}
+.linkgrid a small{display:block;color:var(--muted);font-weight:400;font-size:11.5px}
+.linkgrid a:hover{border-color:var(--blue)}
+.owner{border:1px solid var(--line);padding:9px 11px;display:grid;gap:2px;font-size:13px}
+.owner + .owner{margin-top:6px}
+.owner .den{font-weight:600;overflow-wrap:anywhere}
+.owner .x2{color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
+.owner .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:3px;font-size:12.5px}
+.sig{display:grid;grid-template-columns:78px 1fr;gap:4px 10px;font-size:13px}
+.sig .d{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.srcs{margin:0;padding-left:18px;font-size:12.5px;display:grid;gap:3px}
+.srcs li{overflow-wrap:anywhere}
+.warn{border-left:3px solid var(--amber);background:var(--amber-soft);padding:8px 10px;font-size:13px}
+.strow{display:flex;gap:6px;flex-wrap:wrap}
+#note{width:100%;border:1px solid var(--line);background:var(--bg);padding:8px;min-height:60px;margin-top:8px;resize:vertical}
+.bar{display:flex;gap:2px;height:8px;margin-top:6px}
+.bar i{display:block;height:100%}
+
+/* vues pleine page */
+.page{overflow:auto;min-height:0}
+.page .in{max-width:1100px;margin:0 auto;padding-block:22px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.page h2{font-size:22px;margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.page h3{font-size:15px;margin:26px 0 8px}
+.page p{max-width:70ch;margin:0 0 10px}
+.lead{color:var(--muted);max-width:70ch}
+.page ol.steps{max-width:74ch;margin:0 0 12px;padding-left:20px;display:grid;gap:6px}
+.page table.mt{border-collapse:collapse;width:100%;max-width:900px;margin:0 0 6px}
+.page table.mt th,.page table.mt td{text-align:left;vertical-align:top;padding:8px 10px;border-top:1px solid var(--line);font-weight:400}
+.page table.mt th{font-weight:600;width:34%}
+@media(max-width:600px){.page table.mt th,.page table.mt td{display:block;width:auto}.page table.mt td{border-top:0;padding-top:0}}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--panel);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.telc{font-family:var(--mono);white-space:nowrap}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.box{border:1px solid var(--line);padding:14px}
+.box h4{margin:0 0 6px;font-size:14px}
+.box ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13.5px}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--line);margin-top:12px}
+.stat{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat b{font-family:var(--mono);font-size:22px;font-weight:500;display:block}
+.stat span{font-size:12px;color:var(--muted)}
+/* courrier */
+.modal{position:fixed;inset:0;z-index:2000;background:var(--shade);display:grid;place-items:center;padding:16px}
+.modal .dlg{background:var(--bg);border:1px solid var(--line);width:min(760px,100%);max-height:100%;display:grid;grid-template-rows:auto 1fr auto;min-height:0}
+.dlg header,.dlg footer{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.dlg footer{border-bottom:0;border-top:1px solid var(--line)}
+.dlg header h3{margin:0;font-size:16px;flex:1}
+.dlg .body{padding:14px 16px;overflow:auto;display:grid;gap:10px;min-height:0}
+.sender{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.sender input{border:1px solid var(--line);background:var(--bg);padding:7px 9px;min-width:0;width:100%}
+#letter{width:100%;min-height:340px;border:1px solid var(--line);background:var(--raised);padding:14px;font-family:var(--sans);font-size:14px;line-height:1.55;resize:vertical}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;font-size:13px;z-index:3000}
+@media (max-width:860px){
+  main.carte{grid-template-columns:1fr;grid-template-rows:42vh 1fr}
+  .mapwrap{order:-1}
+  .side{border-right:0;border-top:1px solid var(--line)}
+  .kpis{margin-left:0;gap:14px}
+  .legend{display:none}
+  .fiche{position:fixed;top:env(safe-area-inset-top,0px);width:100%}
+}
+@media (prefers-reduced-motion:no-preference){.fiche{animation:in .16s ease-out}@keyframes in{from{transform:translateX(14px);opacity:.6}to{transform:none;opacity:1}}}
+[hidden]{display:none!important}
+/* ---------- Drakkar : compléments ---------- */
+.brand h1{font-weight:900;letter-spacing:-.03em;font-size:20px}
+header.top{background:var(--bg)}
+nav.tabs button[aria-current="true"]{background:var(--fg);color:var(--bg)}
+.me{position:relative}
+.av{display:inline-grid;place-items:center;width:28px;height:28px;flex:none;border:1px solid var(--fg);font-family:var(--mono);font-size:11px;font-weight:500;background:var(--bg);color:var(--fg)}
+.av.big{width:44px;height:44px;font-size:15px;background:var(--fg);color:var(--bg)}
+.memenu{position:absolute;right:0;top:36px;z-index:1500;background:var(--bg);border:1px solid var(--fg);padding:12px;display:grid;gap:8px;min-width:230px}
+.memenu .btn{text-align:left}
+.srow{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.srow label{display:grid;gap:4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);flex:1;min-width:140px}
+.srow select,.srow input{border:1px solid var(--line);background:var(--bg);padding:6px 8px;text-transform:none;letter-spacing:0;color:var(--fg)}
+.qact{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 10px}
+.qact .srcline{width:100%}
+#jtxt{width:100%;min-height:70px;border:1px solid var(--line);background:var(--bg);padding:8px;resize:vertical}
+.journal{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.journal li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:13px}
+.journal li.srcline{display:block}
+.journal li>div{min-width:0}
+.feed{max-width:860px}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;border:1px solid var(--line);margin-top:12px}
+.member{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.member>div{min-width:0}
+.mstats{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:12.5px;color:var(--muted)}
+.mstats b{color:var(--fg);font-family:var(--mono);font-weight:500}
+.sbtn{background:var(--bg);border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:left;color:var(--fg)}
+.sbtn.on{background:var(--fg);color:var(--bg)}
+.sbtn.on span{color:var(--bg)}
+td.late{color:var(--red);font-weight:600}
+.leaflet-container{background:var(--bg)}
+.leaflet-control-layers{border-radius:0!important;background:var(--bg)!important;color:var(--fg)!important;border:1px solid var(--line)!important}
+.btn.formation{border-color:var(--fg)}
+/* Optique */
+.brand h1,.page h2,.fiche h2{font-family:var(--disp);font-weight:500;letter-spacing:-.03em}
+.brand h1{font-weight:500;font-size:19px;letter-spacing:.06em}
+nav.tabs button,.kpi span,.flabel,.count,th,.tag,.chip{font-family:var(--mono);letter-spacing:.06em}
+nav.tabs button{font-size:11.5px;text-transform:uppercase}
+.card{position:relative}
+.card .pr{border:0;background:none;padding:0;width:44px;height:44px;display:grid;place-items:center;position:relative;font-size:13px}
+.card .pr::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--fg) calc(var(--s)*1%),var(--line) 0);-webkit-mask:radial-gradient(closest-side,transparent 84%,#000 86%);mask:radial-gradient(closest-side,transparent 84%,#000 86%)}
+.card .pr.hi{background:none;color:var(--fg)}
+.card .pr.hi b{font-weight:700}
+.card[aria-current="true"]::before,.card[aria-current="true"]::after{content:"";position:absolute;width:10px;height:10px;border:1px solid var(--fg)}
+.card[aria-current="true"]::before{left:4px;top:4px;border-right:0;border-bottom:0}
+.card[aria-current="true"]::after{right:4px;bottom:4px;border-left:0;border-top:0}
+.t-card::before,.t-card::after{content:"";position:absolute;width:12px;height:12px;border:1px solid #fff}
+.t-card::before{left:-5px;top:-5px;border-right:0;border-bottom:0}
+.t-card::after{right:-5px;bottom:-5px;border-left:0;border-top:0}
+.card{grid-template-columns:44px 1fr auto}
+
+/* ---------- portail de connexion : Optique ---------- */
+.k{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.16em}
+.cap{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.16em}
+.dot{display:inline-block;width:6px;height:6px;background:currentColor;margin-right:8px;vertical-align:1px;animation:gblink 1.4s steps(1) infinite}
+.gate{position:fixed;inset:0;z-index:5000;background:#000;color:#fff;display:grid;grid-template-columns:minmax(0,1fr) 400px;transition:opacity .7s ease,transform .7s cubic-bezier(.7,0,.2,1)}
+.gate.out{opacity:0;transform:scale(1.03);pointer-events:none}
+.dV{position:relative;min-width:0;overflow:hidden}
+.dV canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.dTop{position:absolute;inset:0 0 auto 0;display:flex;justify-content:space-between;gap:12px;padding:calc(15px + env(safe-area-inset-top,0px)) 18px 14px 58px;border-bottom:1px solid rgba(255,255,255,.16);z-index:2}
+.dTop .k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail{position:absolute;top:45px;bottom:0;width:40px;z-index:2;border-right:1px solid rgba(255,255,255,.16);background:repeating-linear-gradient(to bottom,rgba(255,255,255,.4) 0 1px,transparent 1px 8px) right/8px 100% no-repeat,repeating-linear-gradient(to bottom,#fff 0 1px,transparent 1px 48px) right/16px 100% no-repeat}
+.rail b{position:absolute;left:0;width:40px;height:1px;background:#fff;top:20%;animation:grail 7s cubic-bezier(.7,-.35,.25,1.35) infinite alternate}
+.rail span{position:absolute;left:9px;bottom:76px;writing-mode:vertical-rl;transform:rotate(180deg);font:400 9.5px var(--mono);letter-spacing:.2em;opacity:.6}
+@keyframes grail{to{top:78%}}
+.dWm{position:absolute;left:62px;bottom:96px;z-index:2;max-width:calc(100% - 80px)}
+.dWm h2{font:400 clamp(46px,7vw,112px)/.9 var(--disp);letter-spacing:-.045em;margin:0;white-space:nowrap}
+.dWm p{margin:14px 0 0;max-width:36ch;font-size:15px;color:rgba(255,255,255,.72)}
+.dBot{position:absolute;left:40px;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.16);z-index:2;background:rgba(0,0,0,.6)}
+.dBot div{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-right:1px solid rgba(255,255,255,.16);min-width:0}
+.dBot div:last-child{border-right:0}
+.dBot b{display:block;font:500 17px var(--mono);letter-spacing:-.02em}
+.dBot small{font:400 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+.dP{position:relative;border-left:1px solid rgba(255,255,255,.2);padding:calc(26px + env(safe-area-inset-top,0px)) max(28px,env(safe-area-inset-right,0px)) 26px 28px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-width:0;background:#000;overflow:auto}
+.dBox{position:relative;padding:24px 22px}
+.dBox::before,.dBox::after{content:"";position:absolute;width:14px;height:14px;border:1px solid #fff}
+.dBox::before{left:0;top:0;border-right:0;border-bottom:0}
+.dBox::after{right:0;bottom:0;border-left:0;border-top:0}
+#authbox h3{font:400 30px/1.05 var(--disp);letter-spacing:-.03em;margin:0 0 6px}
+#authbox .hint{font-size:13px;color:rgba(255,255,255,.6);margin:0 0 22px}
+.mode{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(255,255,255,.35);margin-bottom:22px}
+.mode button{font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:11px 6px;background:#000;color:#fff;border:0;border-radius:0}
+.mode button[aria-pressed="true"]{background:#fff;color:#000}
+.f{display:flex;flex-direction:column;counter-reset:f}
+.f label{display:block;margin-bottom:16px;counter-increment:f;font:500 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.16em}
+.f label::before{content:counter(f,decimal-leading-zero) "  ";opacity:.5;white-space:pre}
+.f input{display:block;margin-top:8px;font:400 14px var(--mono);letter-spacing:0;text-transform:none;width:100%;min-width:0;color:#fff;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);border-radius:0;outline:0;padding:10px 0;background:linear-gradient(#fff,#fff) left bottom/0 1px no-repeat;transition:background-size .6s cubic-bezier(.16,1,.3,1)}
+.f input:focus{background-size:100% 1px}
+.f input::placeholder{color:rgba(255,255,255,.3)}
+.f button[type=submit]{font:500 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;padding:16px 18px;border:0;border-radius:0;display:flex;justify-content:space-between;align-items:center;background:#fff;color:#000;margin-top:6px;transition:background .2s,color .2s,box-shadow .2s}
+.f button[type=submit]:hover{background:#000;color:#fff;box-shadow:inset 0 0 0 1px #fff}
+.f button:disabled{opacity:.5}
+.f .alt{font:400 11px var(--mono);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.f .alt a{color:#fff}
+.f .err{min-height:1.2em;font:400 12px var(--mono);color:#ff8a8a;margin-top:10px}
+.g-msg{font-family:var(--mono);font-size:12px;line-height:1.9;white-space:pre-wrap;color:#ff8a8a}
+.g-load{font-family:var(--mono);font-size:12px;line-height:2;white-space:pre-wrap}
+.g-load b{color:#fff}
+.g-load .cur{display:inline-block;width:8px;height:14px;background:#fff;vertical-align:-2px;animation:gblink 1s steps(1) infinite}
+@keyframes gblink{50%{opacity:0}}
+@media (max-width:820px){.gate{grid-template-columns:1fr;grid-template-rows:420px auto;overflow:auto}.dP{border-left:0;border-top:1px solid rgba(255,255,255,.2)}.hide-s{display:none}.dBot{grid-template-columns:repeat(3,minmax(0,1fr))}.dWm{left:56px;bottom:84px}.dWm h2{font-size:48px}.dWm p{font-size:13px}.rail span{display:none}}
+
+/* ---------- formation guidée ---------- */
+.tour{position:fixed;inset:0;z-index:4500}
+.t-hole{position:fixed;border:1.5px solid #fff;box-shadow:0 0 0 200vmax rgba(0,0,0,.74);transition:all .45s cubic-bezier(.7,0,.2,1);pointer-events:none}
+.t-hole::after{content:"";position:absolute;inset:-7px;border:1px solid rgba(255,255,255,.5);animation:tping 1.8s infinite}
+.t-hole.none{left:50%!important;top:50%!important;width:0!important;height:0!important;border:0}
+.t-hole.none::after{display:none}
+@keyframes tping{0%{opacity:1;inset:-3px}100%{opacity:0;inset:-16px}}
+.t-card{position:fixed;width:min(400px,calc(100vw - 32px));background:#000;color:#fff;border:1px solid #fff;padding:18px 18px 14px;display:grid;gap:10px;transition:left .45s cubic-bezier(.7,0,.2,1),top .45s cubic-bezier(.7,0,.2,1);font-size:14px;line-height:1.5}
+.t-card.big{width:min(640px,calc(100vw - 32px));padding:28px}
+.t-card .t-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.t-card .t-bar{height:2px;background:#333;position:relative}
+.t-card .t-bar i{position:absolute;inset:0 auto 0 0;background:#fff;transition:width .45s}
+.t-card h4{margin:0;font-family:var(--disp);font-size:21px;font-weight:500;letter-spacing:-.01em;text-wrap:balance}
+.t-card.big h4{font-family:var(--disp);font-size:clamp(30px,5vw,48px);font-weight:400;letter-spacing:-.04em;line-height:1}
+.t-card p{margin:0;color:#d6d6d2}
+.t-card ul,.t-card ol{margin:0;padding-left:20px;display:grid;gap:4px;color:#d6d6d2}
+.t-card b{color:#fff}
+.t-card .click{display:inline-block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;border:1px solid #fff;padding:2px 7px;margin-right:6px}
+.t-card .t-btns{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-top:4px}
+.t-card .t-btns div{display:flex;gap:8px}
+.t-card button{font:inherit;font-size:13px;font-weight:600;border:1px solid #fff;background:#000;color:#fff;padding:7px 12px;border-radius:0}
+.t-card button.go{background:#fff;color:#000}
+.t-card button.go:hover{background:#000;color:#fff}
+.t-card button.skip{border-color:transparent;color:#9a9a95;padding-left:0}
+.t-card .t-anim{animation:tin .35s ease-out}
+@keyframes tin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (max-width:640px){.t-card{left:16px!important;right:16px;top:auto!important;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:auto}}
+@media (prefers-reduced-motion:reduce){.gate *,.tour *{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}}
+
+</style>
+</head><body>
+<div class="gate" id="gate">
+  <div class="dV">
+    <canvas id="gcv" aria-hidden="true"></canvas>
+    <div class="dTop"><span class="k"><span class="dot"></span>Drakkar / optique</span><span class="k hide-s">Acquisition · postes 400 kV et 225 kV</span><span class="k" id="dClk">00:00:00 UTC</span></div>
+    <div class="rail"><b></b><span>Altitude 412 km · orbite basse</span></div>
+    <div class="dWm"><h2 id="dWm">DRAKKAR</h2><p>Tous les grands terrains constructibles à portée du réseau très haute tension. Le propriétaire, son siège, et qui appeler.</p></div>
+    <div class="dBot">
+      <div><b data-n="21414343">0</b><small>lignes de cadastre</small></div>
+      <div><b data-n="992">0</b><small>postes RTE</small></div>
+      <div><b data-n="1965">0</b><small>terrains constructibles</small></div>
+      <div class="hide-s"><b data-n="1929">0</b><small>adresses de siège</small></div>
+    </div>
+  </div>
+  <div class="dP">
+    <span class="k"><span class="dot"></span>Accès restreint · canal chiffré</span>
+    <div class="dBox"><div id="authbox"><span class="k">Connexion…</span></div><div class="g-msg" id="gatemsg" role="status"></div></div>
+    <span class="k" style="opacity:.5" id="gfoot">Données chiffrées · ouvertes après connexion</span>
+  </div>
+</div>
+<div class="tour" id="tour" hidden>
+  <div class="t-hole" id="thole"></div>
+  <div class="t-card" id="tcard" role="dialog" aria-live="polite"></div>
+</div>
+
+<div class="app" id="app" hidden>
+<header class="top">
+  <div class="brand"><h1>DRAKKAR</h1><span id="gen">Campus IA 100 MW · France</span></div>
+  <nav class="tabs" aria-label="Vues">
+    <button type="button" data-view="carte" aria-current="true">Carte</button>
+    <button type="button" data-view="appels">Liste d’appels <span class="mono" id="n-liste"></span></button>
+    <button type="button" data-view="prospection">Prospection <span class="mono" id="n-pros"></span></button>
+    <button type="button" data-view="courriers">Courriers</button>
+    <button type="button" data-view="equipe">Équipe</button>
+    <button type="button" data-view="aide">Mode d’emploi</button>
+    <button type="button" data-view="methode">Méthode et sources</button>
+  </nav>
+  <div class="kpis">
+    <div class="kpi"><b id="k-sites">…</b><span>sites affichés</span></div>
+    <div class="kpi"><b id="k-tel">…</b><span>avec un numéro</span></div>
+    <div class="kpi"><b id="k-adr">…</b><span>adresse de courrier</span></div>
+    <div class="kpi"><b id="k-rec">…</b><span>signaux récents</span></div>
+  </div>
+  <span class="sync" id="sync"></span>
+  <div class="me"><button type="button" class="av" id="mebtn" aria-haspopup="true" aria-expanded="false" title="Mon compte">?</button>
+    <div class="memenu" id="memenu" hidden><div class="srcline" id="meinfo"></div><button type="button" class="btn" id="themebtn">Passer en clair</button><button type="button" class="btn" id="logout">Se déconnecter</button></div></div>
+</header>
+
+<main class="carte" id="v-carte">
+  <section class="side">
+    <div class="filters" id="filters">
+      <div class="frow"><input id="q" type="search" placeholder="Commune, propriétaire, SIREN, poste RTE…" aria-label="Rechercher"><button type="button" class="btn" id="ftoggle">Filtres</button></div>
+      <div><div class="flabel">Recherches prêtes</div><div class="chips" id="presets"></div></div>
+      <div><div class="flabel">Type de site</div><div class="chips" id="f-type"></div></div>
+      <div class="more">
+        <div style="display:grid;gap:10px">
+        <div><div class="flabel">Disponibilité</div><div class="chips" id="f-vente"></div></div>
+        <div><div class="flabel">Affiner</div><div class="chips" id="f-flags"></div></div>
+        <div class="frow"><span class="flabel" style="margin:0">Poste 400 kV à moins de</span><input id="d4" type="range" min="1" max="30" step="1" value="30" aria-label="Distance maximale au poste 400 kV"><span class="mono" id="d4v" style="min-width:86px;text-align:right">sans limite</span></div>
+        <div class="frow"><span class="flabel" style="margin:0">Surface</span><input id="hamin" type="number" min="0" step="1" value="0" style="width:74px" aria-label="Surface minimale en hectares"><span>à</span><input id="hamax" type="number" min="0" step="1" value="" placeholder="max" style="width:74px" aria-label="Surface maximale en hectares"><span>ha</span>
+          <select id="f-reg" aria-label="Région" style="flex:1"><option value="">Toutes les régions</option></select></div>
+        <div class="frow"><span class="flabel" style="margin:0">Suivi</span><select id="f-st" aria-label="Statut de suivi" style="flex:1"><option value="">Tous les statuts</option><option value="none">Pas encore traité</option></select>
+          <select id="sort" aria-label="Tri"><option value="pr">Priorité d’appel</option><option value="d4">Plus près du 400 kV</option><option value="ha">Plus grand</option><option value="rec">Signal le plus récent</option></select></div>
+        <div class="frow"><button type="button" class="linkbtn" id="reset">Réinitialiser les filtres</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="count"><span id="count">Chargement des sites…</span><span id="count2"></span></div>
+    <div class="cards" id="cards"><p class="empty">Les sites arrivent : cadastre, friches, centrales, data centers et terrains publics, triés par priorité d’appel.</p></div>
+  </section>
+  <div class="mapwrap">
+    <div id="map" role="application" aria-label="Carte des sites et des postes RTE"></div>
+    <div class="legend" id="legend"></div>
+    <aside class="fiche" id="fiche" hidden></aside>
+  </div>
+</main>
+
+<section class="page" id="v-appels" hidden><div class="in" id="appels"></div></section>
+<section class="page" id="v-prospection" hidden><div class="in" id="prospection"></div></section>
+<section class="page" id="v-equipe" hidden><div class="in" id="equipe"></div></section>
+<section class="page" id="v-courriers" hidden><div class="in" id="courriers"></div></section>
+<section class="page" id="v-aide" hidden><div class="in">
+<h2>Mode d’emploi</h2><p class="lead">Le but : trouver des terrains de 12 à 40 ha près d’un poste électrique RTE, joindre le propriétaire et savoir s’il vendrait. Comptez trois minutes par fiche.</p>
+<ol class="guide">
+<li><b>Choisissez une recherche prête.</b> Dans l’onglet Carte, cliquez « Cœur de cible » : terrains déjà bâtis ou industriels, à propriétaire privé, en zone constructible, à moins de 5 km d’un poste 400 kV. La liste à gauche est triée par priorité : commencez par le haut.</li>
+<li><b>Ouvrez une fiche.</b> Cliquez un site dans la liste ou sur la carte. La fiche dit à qui appartient le terrain, qui appeler et pourquoi. Les boutons « Précédent » et « Suivant » font défiler la liste sans revenir en arrière.</li>
+<li><b>Regardez le terrain avant d’appeler.</b> Dans la fiche, « Vue satellite » et « Cadastre » montrent en dix secondes si le terrain est vide, occupé ou en friche. S’il est manifestement inutilisable, cliquez « Écarté ».</li>
+<li><b>Appelez.</b> Si un numéro direct est affiché, appelez le propriétaire. Sinon, appelez la mairie (numéro fourni) ou cherchez le standard de la société avec les boutons de recherche. La rubrique « Quoi dire » donne la phrase d’ouverture, et la liste de questions dit quoi demander.</li>
+<li><b>Pas de réponse, ou société sans numéro : envoyez un courrier.</b> Dans la rubrique « Propriétaires », le bouton « Rédiger le courrier » prépare la lettre au siège. L’onglet « Courriers » sort le tableau complet pour un envoi en nombre.</li>
+<li><b>Notez le résultat.</b> Dans « Suivi de prospection », cliquez le résultat d’appel en un clic (Pas de réponse, Pas vendeur, Intéressé…), choisissez un statut, un responsable et une date de rappel, et écrivez une note. Chaque action est signée de votre nom et datée.</li>
+<li><b>Suivez l’équipe.</b> L’onglet « Prospection » liste tous les sites travaillés, avec les rappels du jour et les retards. L’onglet « Équipe » montre qui a fait quoi. Tout se met à jour en direct chez chacun. Le filtre « Pas encore traité » masque ce qui est déjà fait.</li>
+</ol>
+<h3>À savoir</h3>
+<p>« Approche directe » veut dire que le terrain n’est pas annoncé à la vente : on propose d’acheter. L’étiquette « Déduit » signale un texte calculé par la machine, à vérifier au premier appel. La proximité d’un poste ne garantit pas la puissance : c’est RTE qui la confirme ensuite.</p>
+<p>Ne donnez pas le nom de l’investisseur au premier appel, et ne promettez pas de prix : l’objectif est de savoir qui décide et s’il écouterait une offre.</p>
+</div></section>
+<section class="page" id="v-methode" hidden><div class="in" id="methode"></div></section>
+</div>
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="vendor/supabase.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const fr=(x,n=1)=>x==null?'?':Number(x).toLocaleString('fr-FR',{maximumFractionDigits:n,minimumFractionDigits:0});
+const km=v=>v==null?'?':(v<1?Math.round(v*1000)+' m':fr(v)+' km');
+const frdate=d=>{if(!d)return'';const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return d;return (m[3]?m[3]+'/':'')+(m[2]?m[2]+'/':'')+m[1]};
+const TYPE={cad:['Cadastre, hors marché','--blue'],friche:['Friche recensée','--amber'],usine:['Usine fermée ou en procédure','--red'],centrale:['Centrale électrique','--violet'],dc:['Data center','--green'],public:['Terrain public','--teal'],annonce:['Annonce','--ink']};
+const TSHORT={cad:'Cadastre',friche:'Friche',usine:'Usine',centrale:'Centrale',dc:'Data center',public:'Public',annonce:'Annonce'};
+const VENTE={o:'À vendre',p:'Peut-être à vendre',n:'Pas en vente, approche directe'};
+const VSHORT={o:'À vendre',p:'Peut-être',n:'Approche directe'};
+const FI={v:['Vérifié','Écrit dans la source citée'],d:['Déduit','Texte construit à partir des données, à confirmer au téléphone'],c:['À confirmer','Information ancienne ou incomplète']};
+const STATUS=[['liste','À appeler'],['appele','Appelé'],['rappeler','À rappeler'],['courrier','Courrier envoyé'],['discussion','En discussion'],['ecarte','Écarté']];
+const STL=Object.fromEntries(STATUS);
+let D=null,SITES=[],byId={},VIS=[],current=null,shown=120;
+let SUIVI={},dbState='loading';
+const stOf=id=>(SUIVI[id]&&SUIVI[id].statut)||'';
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1800)}
+function copy(text,label){const done=()=>toast(label||'Copié');try{navigator.clipboard.writeText(text).then(done,()=>fallback())}catch(e){fallback()}
+  function fallback(){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){toast('Sélectionnez le texte pour le copier')}ta.remove()}}
+
+/* ---------- filtres ---------- */
+const F=Object.assign({q:'',types:['cad','friche','usine','centrale','public','annonce'],vente:['o','p','n'],flags:[],d4:30,hamin:0,hamax:'',reg:'',st:'',sort:'pr'},LS.get('radar-f',{}));
+const FLAGS=[['tel','Numéro direct connu'],['adr','Adresse de courrier'],['rec','Signal récent'],['prive','Propriétaire privé'],['pubown','Propriétaire public'],['zu','Zone constructible au PLU'],['art','Déjà bâti ou industriel'],['seul','Un seul propriétaire']];
+function saveF(){LS.set('radar-f',F)}
+function hasTel(s){return !!(s.call&&s.call.tel)}
+function mainOwner(s){return s.own&&s.own[0]}
+function hasAdr(s){return !!(s.own||[]).find(o=>o.adr)}
+function pass(s){
+  if(!F.types.includes(s.t))return false;
+  if(!F.vente.includes(s.v))return false;
+  if(F.d4<30&&!(s.d4!=null&&s.d4<=F.d4))return false;
+  if(F.hamin&&!(s.ha!=null&&s.ha>=F.hamin))return false;
+  if(F.hamax&&!(s.ha!=null&&s.ha<=+F.hamax))return false;
+  if(F.reg&&s.reg!==F.reg)return false;
+  if(F.st){const t=stOf(s.id);if(F.st==='none'?t:t!==F.st)return false}
+  for(const f of F.flags){
+    if(f==='tel'&&!hasTel(s))return false;
+    if(f==='adr'&&!hasAdr(s))return false;
+    if(f==='rec'&&!s.rec)return false;
+    if(f==='prive'&&!(mainOwner(s)&&!mainOwner(s).pub))return false;
+    if(f==='pubown'&&!(mainOwner(s)&&mainOwner(s).pub))return false;
+    if(f==='zu'&&!(s.zone&&/^(U|AU)/.test(s.zone.t||'')))return false;
+    if(f==='seul'&&s.nown!==1)return false;
+    if(f==='art'&&s.t==='cad'&&s.sub!=='art')return false;
+  }
+  if(F.q){const hay=s._h||(s._h=norm([s.n,s.ci,s.dep,s.reg,s.insee,s.p4,s.p2,s.op,s.id,...(s.own||[]).map(o=>o.den+' '+(o.siren||'')+' '+(o.dir||[]).join(' '))].join(' ')));if(!norm(F.q).split(/\s+/).every(w=>hay.includes(w)))return false}
+  return true;
+}
+function sorted(a){const k=F.sort;const last=s=>(s.sig&&s.sig[0]&&s.sig[0].d)||'';
+  return a.sort((x,y)=>k==='d4'?(x.d4??999)-(y.d4??999):k==='ha'?(y.ha||0)-(x.ha||0):k==='rec'?last(y).localeCompare(last(x))||y.pr-x.pr:y.pr-x.pr||(x.d4??999)-(y.d4??999))}
+function chips(el,items,sel,onchg){el.innerHTML=items.map(([k,l,c,n])=>`<button type="button" class="chip" data-k="${k}" aria-pressed="${sel.includes(k)}" ${c?`style="--c:var(${c})"`:''}>${c?'<i></i>':''}${esc(l)}${n!=null?`<span class="n">${n}</span>`:''}</button>`).join('');
+  el.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;F.preset='';document.querySelectorAll('#presets .chip').forEach(x=>x.setAttribute('aria-pressed',false));const k=b.dataset.k;const i=sel.indexOf(k);i<0?sel.push(k):sel.splice(i,1);b.setAttribute('aria-pressed',i<0);onchg()}}
+const ALLT=['cad','friche','usine','centrale','public','annonce'];
+const PRESETS=[['coeur','Cœur de cible',{types:['cad'],flags:['prive','zu','art'],d4:5,hamin:12,hamax:'60'}],['pres','Tout à moins de 5 km du 400 kV',{types:ALLT,d4:5}],['vente','À vendre ou peut-être',{types:['friche','usine','centrale','public','annonce'],vente:['o','p']}],['sig','Signaux récents',{types:ALLT,flags:['rec']}],['tel','Avec numéro direct',{types:ALLT,flags:['tel']}],['tout','Tout afficher',{types:ALLT}]];
+function applyPreset(k){const p=PRESETS.find(x=>x[0]===k);if(!p)return;Object.assign(F,{q:'',types:ALLT.slice(),vente:['o','p','n'],flags:[],d4:30,hamin:0,hamax:'',reg:'',st:'',sort:'pr'},JSON.parse(JSON.stringify(p[2])));F.preset=k;shown=120;LS.set('radar-fo',false);initFilters();update();document.querySelector('.side').scrollTop=0;toast('Recherche : '+p[1])}
+function initFilters(){
+  $('presets').innerHTML=PRESETS.map(([k,l])=>`<button type="button" class="chip" data-p="${k}" aria-pressed="${F.preset===k}">${l}</button>`).join('');
+  $('presets').onclick=e=>{const b=e.target.closest('[data-p]');if(b)applyPreset(b.dataset.p)};
+  const tc={};SITES.forEach(s=>tc[s.t]=(tc[s.t]||0)+1);
+  chips($('f-type'),Object.entries(TYPE).filter(([k])=>tc[k]).map(([k,[l,c]])=>[k,l,c,tc[k]]),F.types,()=>{shown=120;update()});
+  const vc={};SITES.forEach(s=>vc[s.v]=(vc[s.v]||0)+1);
+  chips($('f-vente'),Object.entries(VENTE).map(([k,l])=>[k,l,null,vc[k]||0]),F.vente,()=>{shown=120;update()});
+  chips($('f-flags'),FLAGS.map(([k,l])=>[k,l]),F.flags,()=>{shown=120;update()});
+  const regs=[...new Set(SITES.map(s=>s.reg).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr'));
+  $('f-reg').innerHTML='<option value="">Toutes les régions</option>'+regs.map(r=>`<option ${F.reg===r?'selected':''}>${esc(r)}</option>`).join('');
+  $('f-st').innerHTML='<option value="">Tous les statuts</option><option value="none">Pas encore traité</option>'+STATUS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('');
+  $('f-st').value=F.st;$('sort').value=F.sort;$('q').value=F.q;$('d4').value=F.d4;$('hamin').value=F.hamin||0;$('hamax').value=F.hamax||'';
+  const d4v=()=>$('d4v').textContent=F.d4>=30?'sans limite':F.d4+' km';d4v();
+  $('q').oninput=e=>{F.q=e.target.value;shown=120;update()};
+  $('d4').oninput=e=>{F.d4=+e.target.value;d4v();shown=120;update()};
+  $('hamin').oninput=e=>{F.hamin=+e.target.value||0;update()};$('hamax').oninput=e=>{F.hamax=e.target.value;update()};
+  $('f-reg').onchange=e=>{F.reg=e.target.value;update()};$('f-st').onchange=e=>{F.st=e.target.value;update()};$('sort').onchange=e=>{F.sort=e.target.value;update()};
+  $('reset').onclick=()=>{try{localStorage.removeItem('radar-f')}catch(e){};location.reload()};
+  $('ftoggle').onclick=()=>{LS.set('radar-fo',!$('filters').classList.toggle('collapsed'))};
+  if(!LS.get('radar-fo',false))$('filters').classList.add('collapsed');
+}
+
+/* ---------- liste ---------- */
+function cardHTML(s){
+  const o=mainOwner(s),st=stOf(s.id),[tl,tc]=TYPE[s.t];
+  const meta=[s.ci+(s.dep?' ('+s.dep+')':''),s.ha!=null?fr(s.ha)+' ha':'',VSHORT[s.v]].filter(Boolean).join(' · ');
+  return `<button type="button" class="card" data-id="${s.id}" ${current===s.id?'aria-current="true"':''}>
+  <span class="pr ${s.pr>=60?'hi':''}" style="--s:${s.pr}" title="Priorité d’appel sur 100"><b>${s.pr}</b></span>
+  <span class="t">${esc(s.n)}</span><span class="d">${s.d4!=null?km(s.d4):''}</span>
+  <span class="m"><span class="tag" style="--c:var(${tc})">${TSHORT[s.t]}</span>${s.rec?'<span class="tag rec">Récent</span>':''}${hasTel(s)?'<span class="tag tgt">Tél.</span>':''}${st?`<span class="tag fill" style="--c:var(--fg)">${STL[st]}${SUIVI[s.id].updated_by?' · '+esc(initials(SUIVI[s.id].updated_by)):''}</span>`:''}${SUIVI[s.id]&&SUIVI[s.id].assigne?`<span class="tag" title="Responsable">→ ${esc(who(SUIVI[s.id].assigne))}</span>`:''}${(ACTBY[s.id]||[]).length?`<span class="tag" title="Actions au journal">${ACTBY[s.id].length} note${ACTBY[s.id].length>1?'s':''}</span>`:''}${esc(meta)}</span>
+  <span class="o">${o?'Propriétaire : <b>'+esc(o.den)+'</b>'+(s.nown>1?' + '+(s.nown-1):''):'Propriétaire : à demander en mairie'}</span></button>`;
+}
+function update(){
+  saveF();
+  VIS=sorted(SITES.filter(pass));
+  $('count').textContent=VIS.length.toLocaleString('fr-FR')+' site'+(VIS.length>1?'s':'')+' sur '+SITES.length.toLocaleString('fr-FR');
+  $('count2').textContent=dbState==='ok'?'Suivi partagé en direct':dbState==='loading'?'':'Suivi hors ligne';
+  $('cards').innerHTML=VIS.length?VIS.slice(0,shown).map(cardHTML).join('')+(VIS.length>shown?`<button type="button" class="more-btn" id="morebtn">Afficher ${Math.min(120,VIS.length-shown)} sites de plus</button>`:''):'<p class="empty">Aucun site ne passe ces filtres. Élargissez la distance au 400 kV ou réactivez un type de site.</p>';
+  $('k-sites').textContent=VIS.length.toLocaleString('fr-FR');
+  $('k-tel').textContent=VIS.filter(s=>hasTel(s)||s.call2).length.toLocaleString('fr-FR');
+  $('k-adr').textContent=VIS.filter(hasAdr).length.toLocaleString('fr-FR');
+  $('k-rec').textContent=VIS.filter(s=>s.rec).length.toLocaleString('fr-FR');
+  const nl=Object.values(SUIVI).filter(v=>v.statut==='liste').length;$('n-liste').textContent=nl?nl:'';const t0=new Date().toISOString().slice(0,10);const nr=Object.values(SUIVI).filter(v=>v.rappel&&v.rappel<=t0&&v.statut!=='ecarte').length;$('n-pros').textContent=nr?nr:'';
+  drawMarkers();
+}
+$('cards').onclick=e=>{if(e.target.id==='morebtn'){shown+=120;update();return}const b=e.target.closest('.card');if(b)openSite(b.dataset.id,true)};
+
+/* ---------- carte ---------- */
+let map,base,siteLayer,hl,R0,R1,R2,R3;
+function initMap(){
+  map=L.map('map',{preferCanvas:true,minZoom:5,maxZoom:17,zoomSnap:.5});
+  map.fitBounds([[42.3,-4.8],[51.1,8.3]]);
+  map.attributionControl.setPrefix(false).addAttribution('DGFiP · RTE/ODRÉ · Cerema · © OpenStreetMap · IGN');
+  ['z1','z2','z3'].forEach((n,i)=>{map.createPane(n).style.zIndex=405+i*5});
+  R0=L.canvas({padding:.3});R1=L.canvas({padding:.3,pane:'z1'});R2=L.canvas({padding:.3,pane:'z2'});R3=L.canvas({padding:.3,pane:'z3'});
+  base=L.layerGroup().addTo(map);siteLayer=L.layerGroup().addTo(map);hl=L.layerGroup().addTo(map);
+  drawBase();
+  $('legend').innerHTML=Object.entries(TYPE).map(([k,[l,c]])=>`<span><i style="background:var(${c})"></i>${l}</span>`).join('')+`<span><i class="rond" style="background:var(--red)"></i>Poste RTE 400 kV</span><span><i class="rond" style="background:var(--grey)"></i>Poste RTE 225 kV</span>`;
+  const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener&&mq.addEventListener('change',rebuild);
+  new MutationObserver(rebuild).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+}
+function rebuild(){drawBase();drawMarkers();if(current)highlight(byId[current])}
+function drawBase(){
+  base.clearLayers();
+  L.geoJSON(D.dep,{renderer:R0,interactive:false,style:{color:css('--land-line'),weight:.7,fillColor:css('--land'),fillOpacity:1}}).addTo(base);
+  D.postes.forEach(p=>{const m=L.circleMarker([p.la,p.lo],{renderer:p.kv==400?R2:R1,radius:p.kv==400?3.4:1.8,stroke:p.kv==400,weight:1,color:css('--bg'),fillColor:css(p.kv==400?'--red':'--grey'),fillOpacity:p.kv==400?1:.65});m.bindTooltip(`Poste ${esc(p.n)} · ${p.kv} kV${p.e==='A'?' (à construire)':''}`,{className:'tip',direction:'top'});m.addTo(base)});
+}
+function drawMarkers(){
+  if(!map)return;siteLayer.clearLayers();
+  const bg=css('--bg');const col={};Object.entries(TYPE).forEach(([k,[,c]])=>col[k]=css(c));
+  for(let i=VIS.length-1;i>=0;i--){const s=VIS[i];if(s.la==null)continue;
+    const r=s.pr>=60?6.5:s.pr>=45?5:3.8;
+    const m=L.circleMarker([s.la,s.lo],{renderer:R3,radius:r,weight:1.2,color:bg,fillColor:col[s.t],fillOpacity:.95});
+    m.bindTooltip(`${esc(s.n)} · ${esc(s.ci)}${s.ha!=null?' · '+fr(s.ha)+' ha':''}`,{className:'tip',direction:'top'});
+    m.on('click',()=>openSite(s.id,false));m.addTo(siteLayer)}
+}
+function highlight(s){hl.clearLayers();if(!s||s.la==null)return;
+  L.circleMarker([s.la,s.lo],{radius:13,color:css('--fg'),weight:2,fillOpacity:0,interactive:false}).addTo(hl);
+  const p=D.postes.find(q=>q.n===s.p4&&q.kv==400);if(p)L.polyline([[s.la,s.lo],[p.la,p.lo]],{color:css('--red'),weight:2,dashArray:'4 4',interactive:false}).addTo(hl);
+  const p2=D.postes.find(q=>q.n===s.p2&&q.kv==s.k2);if(p2&&s.k2!=400)L.polyline([[s.la,s.lo],[p2.la,p2.lo]],{color:css('--grey'),weight:1.5,dashArray:'2 4',interactive:false}).addTo(hl);}
+
+/* ---------- fiche ---------- */
+const Q='?',E='=',A='&';
+function L_(href,label,sub){return `<a href="${esc(href)}" target="_blank" rel="noopener">${label}<small>${sub}</small></a>`}
+function links(s){if(s.la==null)return'';const la=s.la,lo=s.lo,ci=encodeURIComponent(s.ci||'');
+  return `<div class="linkgrid">
+  ${L_(`https://www.google.com/maps/@${la},${lo},700m/data=!3m1!1e3`,'Vue satellite','Google Maps')}
+  ${L_(`https://www.geoportail.gouv.fr/carte?c=${lo},${la}&z=16&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.PARCELLAIRE_EXPRESS::GEOPORTAIL:OGC:WMTS(1)&permalink=yes`,'Cadastre','Géoportail, photo et parcelles')}
+  ${L_(`https://www.geoportail-urbanisme.gouv.fr/map/#tile=1&lon=${lo}&lat=${la}&zoom=16`,'Urbanisme','Zonage du PLU')}
+  ${L_(`https://explore.data.gouv.fr/fr/immobilier?onglet=carte&filtre=tous&lat=${la}&lng=${lo}&zoom=16`,'Ventes passées','DVF, prix et dates')}
+  ${L_(`https://www.georisques.gouv.fr/cartes-interactives#/?lat=${la}&lng=${lo}&zoom=15`,'Risques','Géorisques')}
+  ${L_(`https://cartofriches.cerema.fr/cartofriches/?lat=${la}&lng=${lo}&zoom=15`,'Friches','Cartofriches')}
+  ${L_(`https://www.google.com/maps/dir/?api=1&destination=${la},${lo}`,'Itinéraire','Pour une visite')}
+  </div>`}
+function searchLinks(name,ci){const q=encodeURIComponent(name),qc=encodeURIComponent('"'+name+'" '+(ci||'')+' téléphone');
+  return `<a class="btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${qc}">Chercher le numéro</a><a class="btn" target="_blank" rel="noopener" href="https://www.pagesjaunes.fr/annuaire/chercherlespros?quoiqui=${q}&ou=${encodeURIComponent(ci||'')}">Pages Jaunes</a><a class="btn" target="_blank" rel="noopener" href="https://www.linkedin.com/search/results/all/?keywords=${q}">LinkedIn</a>`}
+function callBox(c,s,first){if(!c||(!c.who&&!c.tel))return'';
+  return `<div class="callbox"><div class="who">${esc(c.who||'Contact')}</div>${c.role?`<div class="role">${esc(c.role)}</div>`:''}
+  <div class="telrow">${c.tel?`<span class="tel">${esc(c.tel)}</span><button type="button" class="btn" data-copy="${esc(c.tel)}">Copier</button>`:`<span class="tel none">Numéro non public : à chercher, ou passer par la mairie</span>`}</div>
+  ${c.mail?`<div class="srcline">E-mail : <span style="user-select:all">${esc(c.mail)}</span></div>`:''}
+  ${c.tel&&c.src?`<div class="srcline">Source du numéro : ${/^https?:/.test(c.src)?`<a href="${esc(c.src)}" target="_blank" rel="noopener">${esc(c.src.replace(/^https?:\/\/(www\.)?/,'').slice(0,60))}</a>`:esc(c.src)}</div>`:''}
+  ${!c.tel&&c.who?`<div class="telrow">${searchLinks(c.who,s.ci)}</div>`:''}</div>`}
+function ownerHTML(o,i,s){
+  const bits=[o.forme,o.ha?fr(o.ha,2)+' ha'+(o.np?' en '+o.np+' parcelle'+(o.np>1?'s':''):''):'',o.droit,o.naf?('activité '+o.naf):'',o.eff?('effectif '+o.eff):''].filter(Boolean).join(' · ');
+  return `<div class="owner"><div class="den">${esc(o.den)}${o.cessee?' <span class="tag" style="--c:var(--red)">Société cessée</span>':''}${o.bod?' <span class="tag rec">Procédure collective</span>':''}</div>
+  ${bits?`<div class="x2">${esc(bits)}</div>`:''}
+  ${o.adr?`<div class="x2">Siège : <span style="user-select:all;color:var(--fg)">${esc(o.adr)}</span></div>`:''}
+  ${o.dir&&o.dir.length?`<div class="x2">Dirigeants : ${esc(o.dir.join(', '))}</div>`:''}
+  ${o.tel?`<div class="x2">Tél. <span class="mono" style="color:var(--fg);user-select:all">${esc(o.tel)}</span>${o.mail?' · '+esc(o.mail):''}</div>`:''}
+  ${o.bod?`<div class="x2">BODACC du ${frdate(o.bod.d)} : ${esc(o.bod.nat)}. ${esc((o.bod.txt||'').slice(0,220))}</div>`:''}
+  <div class="acts">${o.siren?`<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/${esc(o.siren)}" target="_blank" rel="noopener">Fiche officielle</a><a href="https://www.pappers.fr/entreprise/${esc(o.siren)}" target="_blank" rel="noopener">Pappers</a>`:`<a href="https://annuaire-entreprises.data.gouv.fr/rechercher?terme=${encodeURIComponent(o.den)}" target="_blank" rel="noopener">Trouver la société</a>`}
+  ${o.adr?`<button type="button" class="linkbtn" data-letter="${i}">Rédiger le courrier</button>`:''}</div></div>`}
+function ficheHTML(s){
+  const [tl,tc]=TYPE[s.t];
+  const fi=FI[s.fi||'d'];
+  const facts=[];
+  if(s.ha!=null)facts.push(['Surface',fr(s.ha)+' ha'+(s.surfnote?' ('+s.surfnote+')':'')+(s.hatot&&s.hatot>s.ha+0.5?' · '+fr(s.hatot)+' ha au total pour ce propriétaire dans la commune':'')]);
+  if(s.natl)facts.push(['Nature au cadastre',s.natl]);
+  if(s.zone)facts.push(['Zonage du PLU',(s.zone.t||'')+(s.zone.l?' · '+s.zone.l:'')]);
+  if(s.mw)facts.push(['Centrale',`${s.fuel||''} ${fr(s.mw,0)} MW, ${s.st}${s.do?' depuis '+s.do:''}`]);
+  if(s.op)facts.push(['Exploitant',s.op]);
+  if(s.puis)facts.push(['Puissance, selon la source',s.puis]);
+  (s.facts||[]).forEach(f=>facts.push(f));
+  if(s.parc)facts.push(['Parcelles',s.parc]);
+  const gps=s.la!=null?`${s.la.toFixed(5)}, ${s.lo.toFixed(5)}`:'';
+  const gpn={site:'position du site',commune:'centre de la commune, pas du terrain',approx:'position approximative, à vérifier',parcelle:'centre de la plus grande parcelle'}[s.gp]||'';
+  return `<header><div class="row"><h2>${esc(s.n)}</h2><button type="button" class="x" id="fx" aria-label="Fermer la fiche">×</button></div>
+  <div class="where">${esc(s.ci)}${s.dep?' · '+esc(s.dep):''}${s.reg?' · '+esc(s.reg):''}</div>
+  <div><span class="tag fill" style="--c:var(${tc})">${tl}</span><span class="tag" style="--c:var(--fg)">${VENTE[s.v]}</span>${s.rec?'<span class="tag rec">Signal récent</span>':''}<span class="tag">Priorité ${s.pr}/100</span></div>
+  <div class="navrow"><button type="button" class="btn" data-nav="-1">← Précédent</button><button type="button" class="btn" data-nav="1">Suivant →</button><span class="srcline" style="align-self:center">${(()=>{const i=VIS.findIndex(x=>x.id===s.id);return i>=0?(i+1)+' sur '+VIS.length.toLocaleString('fr-FR'):''})()}</span></div></header>
+  <div class="fbody">
+  <div class="sec"><h3>Qui appeler</h3>${callBox(s.call,s,true)||'<div class="callbox"><div class="who">Propriétaire non identifié</div><div class="role">Aucune société dans le fichier public : la mairie saura qui détient le terrain.</div></div>'}${callBox(s.call2,s)}
+    ${s.mai&&!(s.call2&&s.call2.who===s.mai.nom)&&!(s.call&&s.call.tel===s.mai.tel)?callBox({who:s.mai.nom,role:'Mairie de la commune du terrain'+(s.mai.ad?' · '+s.mai.ad:''),tel:s.mai.tel,mail:s.mai.mail,src:'Annuaire de l’administration (service-public.fr)'},s):''}
+    ${s.mnote&&!s.mai?`<div class="srcline" style="margin-top:6px">Collectivité liée : ${esc(s.mnote)}</div>`:''}
+    ${s.mtel?`<div class="srcline">Tél. collectivité : <span class="mono" style="user-select:all">${esc(s.mtel.tel)}</span></div>`:''}</div>
+  <div class="sec"><h3>Pourquoi appeler</h3><span class="fi ${s.fi||'d'}" title="${fi[1]}">${fi[0]}</span><p class="why">${esc(s.why||'')}</p>${s.why2?`<p class="why" style="margin-top:8px">${esc(s.why2)}</p>`:''}
+    <ul class="ask">${(s.ask||[]).map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>
+  <div class="sec"><h3>Quoi dire</h3>${scriptHTML(s)}</div>
+  ${s.ver?`<div class="sec"><h3>À vérifier</h3><div class="warn">${esc(s.ver)}</div></div>`:''}
+  ${suiviHTML(s)}
+  <div class="sec"><h3>Terrain</h3><dl class="kv">${gps?`<dt>Coordonnées GPS</dt><dd><span class="mono" style="user-select:all">${gps}</span> <button type="button" class="linkbtn" data-copy="${gps}">Copier</button>${gpn?`<div class="srcline">${gpn}</div>`:''}</dd>`:'<dt>Coordonnées GPS</dt><dd>Lieu non communiqué par la source</dd>'}
+    ${facts.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>${links(s)}</div>
+  <div class="sec"><h3>Électricité</h3><dl class="kv">
+    ${s.d4!=null?`<dt>Poste 400 kV</dt><dd>${esc(s.p4)} à <b>${km(s.d4)}</b></dd>`:''}
+    ${s.d2!=null?`<dt>Poste le plus proche</dt><dd>${esc(s.p2)} (${s.k2} kV) à <b>${km(s.d2)}</b></dd>`:''}
+    <dt>Score réseau</dt><dd>${s.ps??0}/100</dd></dl>
+    ${(s.pw||[]).length?`<ul class="ask">${s.pw.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
+    <div class="srcline" style="margin-top:8px">Distances à vol d’oiseau. La proximité d’un poste ne dit pas la puissance disponible : seule une étude RTE la confirme.</div></div>
+  <div class="sec"><h3>Propriétaires${s.nown>1?' ('+s.nown+')':''}</h3>${(s.own||[]).length?s.own.map((o,i)=>ownerHTML(o,i,s)).join(''):'<div class="srcline">Aucune personne morale dans le fichier DGFiP sur ce périmètre.</div>'}</div>
+  ${(s.sig||[]).length?`<div class="sec"><h3>Signaux datés</h3><div class="sig">${s.sig.map(g=>`<span class="d">${frdate(g.d)}</span><span>${g.u?`<a href="${esc(g.u)}" target="_blank" rel="noopener">${esc(g.t)}</a>`:esc(g.t)}</span>`).join('')}</div></div>`:''}
+  <div class="sec"><h3>Sources</h3><ul class="srcs">${(s.src||[]).map(x=>`<li>${x.u?`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t||x.u)}</a>`:esc(x.t)}${x.d?' · '+frdate(x.d):''}</li>`).join('')}</ul></div>
+  </div>`}
+function scriptHTML(s){const o=mainOwner(s);const parc=(s.parc||'').split(', ').slice(0,2).join(' et ');const terr=(s.ha!=null?'de '+fr(s.ha)+' ha ':'')+'à '+s.ci+(parc?' (parcelles '+parc.replace(/ \([^)]*\)/g,'')+')':'');
+  const a=o?`Bonjour, je vous appelle au sujet du terrain ${terr} qui appartient à ${o.den}. Je travaille pour un investisseur qui cherche à acheter un foncier de 12 à 40 hectares pour un projet industriel, et qui peut payer au-dessus du prix du marché. Qui décide chez vous d’une éventuelle vente, et comment puis-je lui parler ?`:'';
+  const b=`Bonjour, je souhaite joindre le service urbanisme ou développement économique. Je m’intéresse au terrain ${terr}${o?', propriété de '+o.den:''}, pour un projet industriel créateur d’activité. Savez-vous si ce terrain est occupé, s’il y a déjà un projet dessus, et qui contacter chez le propriétaire ?`;
+  const blk=(t,x)=>x?`<div class="script"><b>${t}</b>${esc(x)}<div style="margin-top:6px"><button type="button" class="btn" data-copy="${esc(x)}">Copier</button></div></div>`:'';
+  return `<div class="srcline">Modèles à adapter. Ne citez pas le nom de l’investisseur au premier appel.</div>${blk('Au propriétaire',a)}${blk('À la mairie',b)}`}
+function openSite(id,fly){const s=byId[id];if(!s)return;current=id;const f=$('fiche');const fb0=f.querySelector('.fbody');const keep=f.hidden||f.dataset.sid!==id||!fb0?0:fb0.scrollTop;f.innerHTML=ficheHTML(s);f.dataset.sid=id;f.hidden=false;bindSuivi(id);const fb1=f.querySelector('.fbody');if(fb1)fb1.scrollTop=keep;
+  document.querySelectorAll('.card[aria-current]').forEach(c=>c.removeAttribute('aria-current'));const c=document.querySelector(`.card[data-id="${id}"]`);if(c)c.setAttribute('aria-current','true');
+  highlight(s);if(fly&&s.la!=null){const z=Math.max(map.getZoom(),11);const mp=$('map').getBoundingClientRect(),fp=document.querySelector('.fiche,#fiche');let off=0;if(fp){const fr_=fp.getBoundingClientRect();const ov=Math.max(0,Math.min(mp.right,fr_.right)-Math.max(mp.left,fr_.left));if(ov>0&&ov<mp.width-80)off=ov/2}map.flyTo(map.unproject(map.project([s.la,s.lo],z).add([off,0]),z),z,{duration:.6})}}
+$('fiche').addEventListener('click',e=>{const t=e.target;
+  if(t.id==='fx'){$('fiche').hidden=true;current=null;hl.clearLayers();return}
+  if(t.dataset.nav){const i=VIS.findIndex(x=>x.id===current);const n=VIS[i+(+t.dataset.nav)];if(n)openSite(n.id,true);else toast('Fin de la liste');return}
+  if(t.dataset.copy){copy(t.dataset.copy);return}
+  if(t.dataset.st){const s=byId[current];const nv=stOf(s.id)===t.dataset.st?'':t.dataset.st;setSuivi(s.id,{statut:nv},{type:'statut',extra:{statut:nv||null}});return}
+  if(t.dataset.call){const CS={'Pas de réponse':'rappeler','Message laissé':'rappeler','Mauvais numéro':'','Pas vendeur':'ecarte','Intéressé, à relancer':'discussion','Demande un courrier':'appele'};const x=t.dataset.call;const note=($('jtxt')&&$('jtxt').value.trim())||'';if($('jtxt'))$('jtxt').value='';const nv=CS[x]||stOf(current)||'appele';setSuivi(current,{statut:nv},{type:'appel',extra:{texte:x+(note?' · '+note:''),statut:nv}});return}
+  if(t.dataset.del){delAct(t.dataset.del);return}
+  if(t.dataset.letter!=null){openLetter(byId[current],+t.dataset.letter);return}});
+
+/* ---------- Drakkar : comptes, suivi partagé, journal ---------- */
+const SB_URL='https://kaeplelubcnyemejnuwo.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthZXBsZWx1YmNueWVtZWpudXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1NTkxMjYsImV4cCI6MjExMDEzNTEyNn0.iUl8iOwwOuDcJJiHYmo2lU9_ZfK0God9MJRxGZ-DPR8';
+const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+let ME=null,PROFILES={},ACT=[],ACTBY={};
+const STC={liste:'À appeler',appele:'Appelé',rappeler:'À rappeler',courrier:'Courrier envoyé',discussion:'En discussion',ecarte:'Écarté'};
+function who(uid){const p=PROFILES[uid];return p?(p.nom||p.email||'?'):'?'}
+function initials(uid){const n=who(uid).trim().split(/\s+/);return ((n[0]||'?')[0]+(n[1]?n[1][0]:'')).toUpperCase()}
+function ago(ts){if(!ts)return '';const d=(Date.now()-new Date(ts).getTime())/1000;if(d<60)return 'à l’instant';if(d<3600)return 'il y a '+Math.round(d/60)+' min';if(d<86400)return 'il y a '+Math.round(d/3600)+' h';if(d<86400*7)return 'il y a '+Math.round(d/86400)+' j';return 'le '+new Date(ts).toLocaleDateString('fr-FR')}
+function today(){return new Date().toISOString().slice(0,10)}
+function actText(a){const s=a.statut?STC[a.statut]||a.statut:'';
+  if(a.type==='statut')return s?'a passé le site en « '+s+' »':'a retiré le statut';
+  if(a.type==='assigne')return a.texte?'a confié le site à '+a.texte:'a retiré l’attribution';
+  if(a.type==='rappel')return a.texte?'a prévu un rappel le '+frdate(a.texte):'a retiré le rappel';
+  if(a.type==='appel')return 'a appelé : '+(a.texte||'');
+  if(a.type==='courrier')return 'a noté un courrier : '+(a.texte||'');
+  return a.texte||''}
+function indexAct(){ACTBY={};ACT.forEach(a=>{(ACTBY[a.site_id]=ACTBY[a.site_id]||[]).push(a)})}
+async function logAct(site_id,type,extra){const row=Object.assign({site_id,type,user_id:ME.id},extra||{});const {data,error}=await sb.from('activites').insert(row).select().single();if(error){toast('Journal non enregistré : '+error.message);return}if(!ACT.find(x=>x.id===data.id)){ACT.unshift(data);indexAct()}}
+let writing={};
+async function setSuivi(id,patch,act){
+  const cur=Object.assign({},SUIVI[id]||{},patch,{site_id:id,updated_at:new Date().toISOString(),updated_by:ME.id});SUIVI[id]=cur;
+  const row={site_id:id};['statut','note','rappel','assigne'].forEach(k=>{if(k in cur)row[k]=cur[k]===''?null:cur[k]});
+  writing[id]=(writing[id]||Promise.resolve()).then(()=>sb.from('suivi').upsert(row)).then(({error})=>{if(error)toast('Suivi non enregistré : '+error.message)});
+  if(act)await logAct(id,act.type,act.extra);
+  update();if(current===id&&!['note','jtxt'].includes(document.activeElement?.id))openSite(id,false);renderViews()}
+async function initDb(){
+  dbState='loading';
+  const [p,s,a]=await Promise.all([sb.from('profiles').select('*'),sb.from('suivi').select('*'),sb.from('activites').select('*').order('created_at',{ascending:false}).limit(3000)]);
+  (p.data||[]).forEach(x=>PROFILES[x.id]=x);SUIVI={};(s.data||[]).forEach(x=>SUIVI[x.site_id]=x);ACT=a.data||[];indexAct();
+  dbState=(p.error||s.error||a.error)?'off':'ok';
+  sb.channel('drakkar').on('postgres_changes',{event:'*',schema:'public',table:'suivi'},e=>{const r=e.new&&e.new.site_id?e.new:null;if(r)SUIVI[r.site_id]=r;refresh()})
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'activites'},e=>{if(!ACT.find(x=>x.id===e.new.id)){ACT.unshift(e.new);indexAct();if(e.new.user_id!==ME.id)toast(who(e.new.user_id)+' '+actText(e.new).slice(0,80))}refresh()})
+    .on('postgres_changes',{event:'DELETE',schema:'public',table:'activites'},e=>{ACT=ACT.filter(x=>x.id!==e.old.id);indexAct();refresh()})
+    .on('postgres_changes',{event:'*',schema:'public',table:'profiles'},e=>{if(e.new&&e.new.id)PROFILES[e.new.id]=e.new;refresh()}).subscribe();
+  sb.from('profiles').update({vu_le:new Date().toISOString()}).eq('id',ME.id).then(()=>{});
+}
+let rT=0;function refresh(){clearTimeout(rT);rT=setTimeout(()=>{update();renderViews();if(current&&!['note','jtxt'].includes(document.activeElement?.id)&&$('modal').hidden)openSite(current,false)},150)}
+
+function suiviHTML(s){const sv=SUIVI[s.id]||{},st=sv.statut||'';const J=ACTBY[s.id]||[];
+  const opts=Object.values(PROFILES).sort((a,b)=>(a.nom||'').localeCompare(b.nom||'')).map(p=>`<option value="${p.id}" ${sv.assigne===p.id?'selected':''}>${esc(p.nom||p.email)}</option>`).join('');
+  return `<div class="sec" id="suivi-sec"><h3>Suivi de prospection</h3>
+  ${sv.updated_by?`<div class="srcline" style="margin-bottom:8px">Dernière action : <b>${esc(who(sv.updated_by))}</b>, ${ago(sv.updated_at)}</div>`:'<div class="srcline" style="margin-bottom:8px">Personne n’a encore traité ce site.</div>'}
+  <div class="strow">${STATUS.map(([k,l])=>`<button type="button" class="btn ${st===k?'on':''}" data-st="${k}">${l}</button>`).join('')}</div>
+  <div class="srow"><label>Responsable<select id="assigne"><option value="">Personne</option>${opts}</select></label><label>Rappel le<input type="date" id="rappel" value="${sv.rappel||''}"></label></div>
+  <div class="qact"><span class="srcline">Résultat d’appel en un clic :</span>${['Pas de réponse','Message laissé','Mauvais numéro','Pas vendeur','Intéressé, à relancer','Demande un courrier'].map(t=>`<button type="button" class="btn" data-call="${t}">${t}</button>`).join('')}</div>
+  <textarea id="jtxt" placeholder="Note : qui a répondu, ce qui a été dit, prochaine étape…"></textarea>
+  <div class="tools" style="margin:6px 0 0"><button type="button" class="btn pri" id="jadd">Ajouter au journal</button><button type="button" class="btn" id="jcour">Noter un courrier envoyé</button></div>
+  <ol class="journal">${J.length?J.map(a=>`<li><span class="av" title="${esc(who(a.user_id))}">${esc(initials(a.user_id))}</span><div><b>${esc(who(a.user_id))}</b> ${esc(actText(a))}<div class="srcline">${new Date(a.created_at).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}${a.user_id===ME.id?` · <button type="button" class="linkbtn" data-del="${a.id}">supprimer</button>`:''}</div></div></li>`).join(''):'<li class="srcline">Aucune action pour l’instant.</li>'}</ol></div>`}
+
+function bindSuivi(id){
+  const f=$('fiche');
+  const a=f.querySelector('#assigne');if(a)a.onchange=e=>{const v=e.target.value;setSuivi(id,{assigne:v||null},{type:'assigne',extra:{texte:v?who(v):''}})};
+  const r=f.querySelector('#rappel');if(r)r.onchange=e=>{const v=e.target.value;setSuivi(id,{rappel:v||null,statut:v&&!stOf(id)?'rappeler':stOf(id)},{type:'rappel',extra:{texte:v||''}})};
+  const j=f.querySelector('#jadd');if(j)j.onclick=()=>{const t=f.querySelector('#jtxt').value.trim();if(!t){toast('Écrivez une note');return}f.querySelector('#jtxt').value='';setSuivi(id,{note:t},{type:'note',extra:{texte:t}})};
+  const c=f.querySelector('#jcour');if(c)c.onclick=()=>{const t=f.querySelector('#jtxt').value.trim()||'courrier au siège';f.querySelector('#jtxt').value='';setSuivi(id,{statut:'courrier'},{type:'courrier',extra:{texte:t}})};
+}
+async function delAct(aid){const {error}=await sb.from('activites').delete().eq('id',aid);if(error){toast(error.message);return}ACT=ACT.filter(x=>x.id!=aid);indexAct();refresh()}
+
+/* ---------- vue Prospection ---------- */
+let PF='tous';
+function prospHTML(){
+  const ids=Object.keys(SUIVI).filter(k=>byId[k]&&(SUIVI[k].statut||SUIVI[k].assigne||SUIVI[k].rappel||(ACTBY[k]||[]).length));
+  ids.forEach(k=>{});const t=today();
+  const last=k=>{const a=(ACTBY[k]||[])[0];return a?a.created_at:(SUIVI[k].updated_at||'')};
+  let rows=ids.map(k=>byId[k]);
+  const cnt={tous:rows.length,moi:rows.filter(s=>SUIVI[s.id].assigne===ME.id).length,jour:rows.filter(s=>SUIVI[s.id].rappel&&SUIVI[s.id].rappel<=t&&SUIVI[s.id].statut!=='ecarte').length};
+  if(PF==='moi')rows=rows.filter(s=>SUIVI[s.id].assigne===ME.id);
+  if(PF==='jour')rows=rows.filter(s=>SUIVI[s.id].rappel&&SUIVI[s.id].rappel<=t&&SUIVI[s.id].statut!=='ecarte');
+  if(STC[PF])rows=rows.filter(s=>SUIVI[s.id].statut===PF);
+  rows.sort((a,b)=>last(b.id).localeCompare(last(a.id)));
+  const bySt={};ids.forEach(k=>{const x=SUIVI[k].statut||'';bySt[x]=(bySt[x]||0)+1});
+  const funnel=['liste','appele','rappeler','courrier','discussion','ecarte'].map(k=>`<button type="button" class="stat sbtn ${PF===k?'on':''}" data-pf="${k}"><b>${bySt[k]||0}</b><span>${STC[k]}</span></button>`).join('');
+  return `<h2>Prospection</h2><p class="lead">Tous les sites travaillés par l’équipe, avec qui a fait quoi. Les changements apparaissent en direct chez chacun.</p>
+  <div class="statgrid">${funnel}</div>
+  <div class="tools"><div class="chips">${[['tous','Tous',cnt.tous],['moi','Mes sites',cnt.moi],['jour','À rappeler aujourd’hui ou en retard',cnt.jour]].map(([k,l,n])=>`<button type="button" class="chip" data-pf="${k}" aria-pressed="${PF===k}">${l}<span class="n">${n}</span></button>`).join('')}</div></div>
+  ${rows.length?`<div class="tbl"><table><thead><tr><th>Site</th><th>Statut</th><th>Responsable</th><th>Rappel</th><th>Dernière action</th></tr></thead><tbody>${rows.map(s=>{const sv=SUIVI[s.id],a=(ACTBY[s.id]||[])[0];const late=sv.rappel&&sv.rappel<=t&&sv.statut!=='ecarte';
+    return `<tr><td><button type="button" class="linkbtn" data-open="${s.id}">${esc(s.n)}</button><div class="srcline">${esc(s.ci)} · ${s.ha!=null?fr(s.ha)+' ha':''}${s.d4!=null?' · 400 kV à '+km(s.d4):''}</div></td><td>${sv.statut?`<span class="tag fill" style="--c:var(--fg)">${STC[sv.statut]}</span>`:''}</td><td>${sv.assigne?esc(who(sv.assigne)):'<span class="srcline">personne</span>'}</td><td class="${late?'late':''}">${sv.rappel?frdate(sv.rappel):''}</td><td>${a?`<b>${esc(who(a.user_id))}</b> ${esc(actText(a).slice(0,110))}<div class="srcline">${ago(a.created_at)}</div>`:''}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="empty">Rien ici pour l’instant. Ouvrez une fiche sur la carte et cliquez un statut, ou ajoutez une note.</p>'}`}
+
+/* ---------- vue Équipe ---------- */
+function equipeHTML(){
+  const P=Object.values(PROFILES).sort((a,b)=>(a.nom||'').localeCompare(b.nom||''));
+  const st=uid=>{const m=ACT.filter(a=>a.user_id===uid);return {appels:m.filter(a=>a.type==='appel').length,notes:m.filter(a=>a.type==='note').length,cour:m.filter(a=>a.type==='courrier').length,sites:new Set(m.map(a=>a.site_id)).size,last:m[0]&&m[0].created_at}};
+  return `<h2>Équipe</h2><p class="lead">Toutes les personnes inscrites et ce qu’elles ont fait. Pour changer votre nom affiché, modifiez-le ci-dessous.</p>
+  <div class="tools"><label class="srcline" style="display:flex;gap:8px;align-items:center">Votre nom <input id="mynom" value="${esc((PROFILES[ME.id]||{}).nom||'')}" style="border:1px solid var(--line);background:var(--bg);padding:6px 8px"></label><button type="button" class="btn" id="mynomsave">Enregistrer</button></div>
+  <div class="team">${P.map(p=>{const s=st(p.id);return `<div class="member"><span class="av big">${esc(initials(p.id))}</span><div><b>${esc(p.nom||'')}</b>${p.id===ME.id?' <span class="srcline">(vous)</span>':''}<div class="srcline">${esc(p.email||'')} · inscrit ${ago(p.created_at)}${p.vu_le?' · vu '+ago(p.vu_le):''}</div>
+    <div class="mstats"><span><b>${s.sites}</b> sites</span><span><b>${s.appels}</b> appels</span><span><b>${s.notes}</b> notes</span><span><b>${s.cour}</b> courriers</span></div></div></div>`}).join('')}</div>
+  <h3>Fil d’activité</h3><ol class="journal feed">${ACT.slice(0,250).map(a=>{const s=byId[a.site_id];return `<li><span class="av">${esc(initials(a.user_id))}</span><div><b>${esc(who(a.user_id))}</b> ${esc(actText(a))}${s?` · <button type="button" class="linkbtn" data-open="${s.id}">${esc(s.n)}</button> <span class="srcline">${esc(s.ci)}</span>`:''}<div class="srcline">${ago(a.created_at)}</div></div></li>`}).join('')||'<li class="srcline">Aucune activité pour l’instant.</li>'}</ol>`}
+
+/* ---------- connexion ---------- */
+function authUI(mode){const box=$('authbox');const reg=mode==='inscription';
+  box.innerHTML=`<h3>${reg?'Inscription':'Identification'}</h3><p class="hint">${reg?'Il faut le code d’accès donné par l’équipe.':'Opérateurs autorisés uniquement.'}</p>
+  <div class="mode"><button type="button" data-am="connexion" aria-pressed="${!reg}">Connexion</button><button type="button" data-am="inscription" aria-pressed="${reg}">Créer un compte</button></div>
+  <form class="f" id="authf" novalidate>
+    ${reg?'<label>Prénom et nom<input name="nom" autocomplete="name" required placeholder="Prénom Nom"></label>':''}
+    <label>E-mail<input name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr"></label>
+    <label>Mot de passe<input name="pw" type="password" autocomplete="${reg?'new-password':'current-password'}" minlength="8" required placeholder="8 caractères minimum"></label>
+    ${reg?'<label>Code d’accès<input name="code" autocomplete="off" required placeholder="DRAKKAR-XXXXXX"></label>':''}
+    <button type="submit"><span>${reg?'Créer le compte':'Entrer'}</span><span>→</span></button>
+    <div class="err" id="autherr" role="alert"></div>
+    <div class="alt"><a href="#" id="authswitch">${reg?'J’ai déjà un compte':'Créer un compte'}</a>${reg?'':'<a href="#" id="authforgot">Mot de passe oublié</a>'}</div>
+  </form>`;
+  box.querySelectorAll('[data-am]').forEach(b=>b.onclick=()=>authUI(b.dataset.am));
+  $('authswitch').onclick=e=>{e.preventDefault();authUI(reg?'connexion':'inscription')};
+  if(!reg)$('authforgot').onclick=async e=>{e.preventDefault();const em=$('authf').email.value.trim();if(!em){$('autherr').textContent='Saisissez votre e-mail, puis recliquez.';return}
+    const {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});$('autherr').textContent=error?error.message:'Si ce compte existe, un e-mail de réinitialisation part maintenant.'};
+  $('authf').onsubmit=async e=>{e.preventDefault();const f=e.target,err=$('autherr');err.textContent='';const btn=f.querySelector('button[type=submit]');btn.disabled=true;
+    try{const email=f.email.value.trim(),password=f.pw.value;
+      if(password.length<8)throw new Error('Mot de passe : 8 caractères minimum.');
+      if(reg){const {data,error}=await sb.auth.signUp({email,password,options:{data:{nom:f.nom.value.trim(),code:f.code.value.trim().toUpperCase()}}});
+        if(error)throw new Error(/Database error|invalide/i.test(error.message)?'Code d’accès invalide.':error.message);
+        if(!data.session)throw new Error('Compte créé. Confirmez votre e-mail puis connectez-vous.');}
+      else{const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw new Error(/Invalid login/i.test(error.message)?'E-mail ou mot de passe incorrect.':error.message)}
+    }catch(x){err.textContent=x.message}finally{btn.disabled=false}};
+}
+async function loadData(){
+  const {data,error}=await sb.from('config').select('valeur').eq('cle','cle_donnees').single();if(error)throw new Error('Clé des données introuvable : '+error.message);
+  const raw=Uint8Array.from(atob(data.valeur),c=>c.charCodeAt(0));
+  const key=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);
+  const buf=new Uint8Array(await (await fetch('data.enc',{cache:'no-cache'})).arrayBuffer());
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},key,buf.slice(12));
+  const txt=await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  return JSON.parse(txt)}
+
+/* ---------- courrier ---------- */
+function letterText(s,o,me){const refs=s.parc?` (parcelles ${s.parc.split(', ').slice(0,6).join(', ')})`:'';
+  const ha=o.ha&&o.ha>=1?fr(o.ha):(s.ha!=null?fr(s.ha):'');
+  const pub=!!o.pub;
+  return `${me.nom||'[Prénom Nom]'}
+${me.adr||'[Adresse]'}
+${me.tel||'[Téléphone]'} · ${me.mail||'[E-mail]'}
+
+${o.den}
+${o.dir&&o.dir[0]&&!pub?'À l’attention de '+o.dir[0].replace(/\s*\(.*\)$/,'')+'\n':pub?'À l’attention du service foncier et du développement économique\n':'À l’attention de la direction\n'}${o.adr||''}
+
+Le ${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}
+
+Objet : votre terrain à ${s.ci}${refs}
+
+Madame, Monsieur,
+
+Nous recherchons, pour le compte d’un opérateur européen d’infrastructures numériques, un terrain de 12 à 20 hectares destiné à accueillir un campus de centres de données de nouvelle génération.
+
+${pub?'Votre collectivité':'Votre société'} est propriétaire d’un ensemble d’environ ${ha} hectares à ${s.ci}${refs}. Son emplacement correspond à ce que nous cherchons, en particulier par sa proximité avec le réseau électrique à très haute tension.
+
+À notre connaissance, ce terrain n’est pas proposé à la vente. Nous nous permettons néanmoins de vous écrire : l’opérateur achète et construit lui-même ses sites, et il est en mesure de formuler une offre d’acquisition ferme, à des conditions financières attractives, pour tout ou partie du terrain. D’autres formes sont possibles si vous souhaitez rester associé au projet, par exemple un apport du terrain à une société commune.
+
+Le projet repose sur un refroidissement en circuit fermé, sans consommation continue d’eau, et représente un investissement de long terme pour le territoire.
+
+Si cette démarche retient votre attention, je vous propose un premier échange téléphonique, sans engagement et en toute confidentialité.
+
+Je vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.
+
+${me.nom||'[Prénom Nom]'}`}
+function openLetter(s,i){const o=s.own[i];const me=Object.assign({nom:(PROFILES[ME.id]||{}).nom||'',mail:ME.email||''},LS.get('radar-me',{}));const m=$('modal');
+  m.innerHTML=`<div class="dlg" role="dialog" aria-label="Courrier"><header><h3>Courrier à ${esc(o.den)}</h3><button type="button" class="x" id="mx" aria-label="Fermer">×</button></header>
+  <div class="body"><div class="sender"><input id="me-nom" placeholder="Votre prénom et nom" value="${esc(me.nom||'')}"><input id="me-adr" placeholder="Votre adresse" value="${esc(me.adr||'')}"><input id="me-tel" placeholder="Votre téléphone" value="${esc(me.tel||'')}"><input id="me-mail" placeholder="Votre e-mail" value="${esc(me.mail||'')}"></div>
+  <textarea id="letter" aria-label="Texte du courrier"></textarea>
+  <div class="srcline">Modèle à relire avant envoi. Rien n’est envoyé depuis cette page.</div></div>
+  <footer><button type="button" class="btn pri" id="lcopy">Copier le courrier</button><button type="button" class="btn" id="ladr">Copier l’adresse</button><button type="button" class="btn" id="lsent">Marquer « courrier envoyé »</button></footer></div>`;
+  m.hidden=false;const fill=()=>{const me2={nom:$('me-nom').value,adr:$('me-adr').value,tel:$('me-tel').value,mail:$('me-mail').value};LS.set('radar-me',me2);$('letter').value=letterText(s,o,me2)};fill();
+  ['me-nom','me-adr','me-tel','me-mail'].forEach(k=>$(k).oninput=fill);
+  $('mx').onclick=()=>m.hidden=true;m.onclick=e=>{if(e.target===m)m.hidden=true};
+  $('lcopy').onclick=()=>copy($('letter').value,'Courrier copié');$('ladr').onclick=()=>copy(o.den+'\n'+o.adr,'Adresse copiée');
+  $('lsent').onclick=()=>{setSuivi(s.id,{statut:'courrier'},{type:'courrier',extra:{texte:'courrier au siège de '+o.den}});m.hidden=true;toast('Courrier noté au journal')}}
+
+/* ---------- vues ---------- */
+function setView(v){['carte','appels','prospection','courriers','equipe','aide','methode'].forEach(k=>$('v-'+k).hidden=k!==v);document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===v));if(v==='carte'&&map)setTimeout(()=>map.invalidateSize(),30);renderViews();try{history.replaceState(null,'','#'+v)}catch(e){location.hash=v}}
+document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('button');if(b)setView(b.dataset.view)};
+function callOf(s){const c=s.call&&s.call.tel?s.call:(s.call2||s.call||{});return c}
+function renderViews(){if(!D)return;
+  if(!$('v-appels').hidden){const L1=SITES.filter(s=>stOf(s.id)==='liste');const rows=L1.length?L1:VIS.slice(0,200);
+    const txt=rows.map((s,i)=>{const c=callOf(s);return `${i+1}. ${s.n}, ${s.ci} (${s.dep})\n   Appeler : ${c.who||'mairie'}${c.tel?' · '+c.tel:''}\n   Pourquoi : ${s.why}\n   GPS : ${s.la!=null?s.la.toFixed(5)+', '+s.lo.toFixed(5):'non communiqué'}${s.mai?'\n   Mairie : '+s.mai.nom+' · '+s.mai.tel:''}`}).join('\n\n');
+    $('appels').innerHTML=`<h2>Liste d’appels</h2><p class="lead">${L1.length?`Les ${L1.length} sites que vous avez mis dans la liste.`:`Voici les ${rows.length} premiers sites de la recherche en cours, par priorité. Pour composer votre propre liste, ouvrez une fiche et cliquez « Dans la liste d’appels ».`}</p>
+    <div class="tools"><button type="button" class="btn pri" id="acopy">Copier la liste pour l’envoyer</button><span class="srcline">Texte brut : site, qui appeler, numéro, raison, GPS, mairie.</span></div>
+    <div class="tbl"><table><thead><tr><th>#</th><th>Site</th><th>Qui appeler</th><th>Numéro</th><th>Pourquoi</th><th>Mairie</th></tr></thead><tbody>${rows.map((s,i)=>{const c=callOf(s);return `<tr><td class="mono">${i+1}</td><td><button type="button" class="linkbtn" data-open="${s.id}">${esc(s.n)}</button><div class="srcline">${esc(s.ci)} · ${s.ha!=null?fr(s.ha)+' ha · ':''}${s.d4!=null?'400 kV à '+km(s.d4):''}</div></td><td>${esc(c.who||'')}<div class="srcline">${esc((c.role||'').slice(0,80))}</div></td><td class="telc">${esc(c.tel||'à chercher')}</td><td style="min-width:260px">${esc((s.why||'').slice(0,260))}${(s.why||'').length>260?'…':''}</td><td class="telc">${s.mai?esc(s.mai.tel):''}</td></tr>`}).join('')}</tbody></table></div>`;
+    $('acopy').onclick=()=>copy(txt,'Liste copiée')}
+  if(!$('v-courriers').hidden){const base=SITES.filter(s=>stOf(s.id)==='liste'&&hasAdr(s));const all=(base.length?base:VIS.filter(s=>hasAdr(s)&&mainOwner(s)&&!mainOwner(s).pub));const rows=all.slice(0,150);
+    const line=s=>{const o=s.own.find(o=>o.adr);return [o.den,(o.dir&&o.dir[0]||'').replace(/\s*\(.*\)$/,''),o.adr,s.ci,s.ha!=null?fr(s.ha):'',s.parc||'',s.id]};
+    const csv='Société;Dirigeant;Adresse du siège;Commune du terrain;Surface (ha);Parcelles;Référence\n'+all.map(s=>line(s).map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\n');
+    $('courriers').innerHTML=`<h2>Courriers aux propriétaires</h2><p class="lead">${base.length?`Les ${base.length} sites de votre liste dont le siège du propriétaire est connu.`:`${all.length.toLocaleString('fr-FR')} propriétaires privés des filtres en cours ont un siège connu${all.length>150?' : les 150 premiers sont affichés, le fichier les contient tous':''}.`} L’adresse est celle du siège social au registre des entreprises. Ouvrez un site pour rédiger son courrier.</p>
+    <div class="tools"><button type="button" class="btn pri" id="ccopy">Copier le tableau pour un publipostage</button><button type="button" class="btn" id="csave">Enregistrer en fichier CSV</button></div>
+    <div class="tbl"><table><thead><tr><th>Société</th><th>Dirigeant</th><th>Adresse du siège</th><th>Terrain</th><th>Surface</th></tr></thead><tbody>${rows.map(s=>{const l=line(s);return `<tr><td><button type="button" class="linkbtn" data-open="${s.id}">${esc(l[0])}</button></td><td>${esc(l[1])}</td><td>${esc(l[2])}</td><td>${esc(l[3])}</td><td class="mono">${esc(l[4])} ha</td></tr>`}).join('')}</tbody></table></div>`;
+    $('ccopy').onclick=()=>copy(csv,'Tableau copié');
+    $('csave').onclick=()=>{const u=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));const a=document.createElement('a');a.href=u;a.download='courriers-drakkar.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Fichier enregistré')}}
+  if(!$('v-prospection').hidden)$('prospection').innerHTML=prospHTML();
+  if(!$('v-equipe').hidden&&document.activeElement?.id!=='mynom')$('equipe').innerHTML=equipeHTML();
+  if(!$('v-methode').hidden&&!$('methode').dataset.done){$('methode').dataset.done=1;$('methode').innerHTML=methodeHTML()}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(b){setView('carte');openSite(b.dataset.open,true);return}
+  const p=e.target.closest('[data-pf]');if(p){PF=PF===p.dataset.pf&&p.dataset.pf!=='tous'?'tous':p.dataset.pf;renderViews();return}
+  if(e.target.id==='mynomsave'){const n=$('mynom').value.trim();if(!n){toast('Nom vide');return}sb.from('profiles').update({nom:n}).eq('id',ME.id).then(({error})=>{if(error)toast(error.message);else{PROFILES[ME.id].nom=n;toast('Nom enregistré');userUI();renderViews()}});return}});
+function methodeHTML(){const M=D.meta||{};const tc={};SITES.forEach(s=>tc[s.t]=(tc[s.t]||0)+1);
+  return `<h2>Méthode et sources</h2><p class="lead">Données assemblées le ${frdate(D.gen)}. Chaque fiche cite ses sources et porte une étiquette : vérifié, déduit ou à confirmer.</p>
+  <div class="statgrid">${Object.entries(TYPE).filter(([k])=>tc[k]).map(([k,[l]])=>`<div class="stat"><b>${tc[k].toLocaleString('fr-FR')}</b><span>${l}</span></div>`).join('')}</div>
+  ${M.html||''}`}
+
+/* ---------- démarrage ---------- */
+async function boot(){
+  try{D=await loadData()}
+  catch(e){gateMsg('Les données n’ont pas pu être ouvertes : '+e.message);return}
+  SITES=D.sites;const T=D.T;
+  if(T)SITES.forEach(s=>{s.ask=T.ask[s.t]||[];s.src=(s.src||[]).map(i=>typeof i==='number'?T.src[i]:i);if(!s.mai&&s.insee&&T.mai[s.insee])s.mai=T.mai[s.insee];
+    if(s.c2m&&s.mai)s.call2={who:s.mai.nom,role:'service urbanisme ou développement économique : la mairie sait qui détient le terrain et ce qui s’y prépare',tel:s.mai.tel,src:'Annuaire de l’administration (service-public.fr), lu le '+frdate(D.gen)};
+    if(typeof s.ver==='number')s.ver=T.ver[s.ver]});
+  byId=Object.fromEntries(SITES.map(s=>[s.id,s]));
+  $('gen').textContent='Campus IA 100 MW · données du '+frdate(D.gen);
+  await initDb();openApp();
+  F.types=F.types.filter(t=>TYPE[t]);initFilters();initMap();update();
+  const h=(location.hash||'').slice(1);if(['appels','prospection','courriers','equipe','aide','methode'].includes(h))setView(h);
+  renderViews();
+}
+/* ---------- portail : animation, session, compte ---------- */
+const RED=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+try{const th=localStorage.getItem('drakkar-theme');if(th)document.documentElement.dataset.theme=th}catch(e){}
+/* globe optique */
+(function anim(){const cl=(x,a=0,b=1)=>x<a?a:x>b?b:x,io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,oc=x=>1-Math.pow(1-x,3),ob=x=>{const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const FR=[[2.55,51.08],[1.6,50.9],[1.6,50.2],[1.4,50.07],[.2,49.7],[.1,49.45],[-.2,49.3],[-1.1,49.38],[-1.3,49.7],[-1.9,49.7],[-1.6,48.8],[-1.4,48.65],[-2,48.62],[-3,48.8],[-4,48.7],[-4.75,48.4],[-4.3,48.1],[-4.4,47.9],[-3.5,47.7],[-2.8,47.5],[-2.2,47.25],[-2.1,47],[-1.9,46.7],[-1.2,46.2],[-1.1,45.6],[-1.25,45],[-1.2,44.3],[-1.45,43.6],[-1.75,43.35],[-1,43.05],[0,42.75],[.7,42.85],[1.7,42.5],[2.6,42.4],[3.15,42.45],[3.05,43.05],[3.5,43.3],[4.1,43.55],[4.8,43.35],[5.4,43.2],[6,43.05],[6.7,43.2],[7.4,43.75],[7.55,44.1],[6.9,44.4],[7,45],[6.8,45.5],[7.05,45.9],[6.5,46.45],[6.1,46.25],[6,46.6],[6.9,47.35],[7.55,47.6],[7.6,48.1],[8.2,48.95],[7.5,49.1],[6.75,49.15],[6.4,49.45],[5.8,49.55],[4.9,49.8],[4.8,50.15],[4.2,49.97],[3.6,50.4],[2.55,51.08]];
+const ND=[[2.13,51],[3.06,50.63],[1.1,49.44],[2.35,48.86],[4.03,49.26],[6.31,49.39],[7.75,48.58],[-1.88,49.54],[-1.68,48.11],[-1.55,47.22],[.69,47.39],[5.04,47.32],[3.26,46.25],[4.84,45.76],[5.72,45.19],[-.58,44.84],[1.44,43.6],[4.73,44.33],[5.37,43.3],[3.88,43.61],[7.34,47.75],[3.08,45.78],[.85,44.11]];
+const ED=[[0,1],[0,2],[1,4],[1,3],[2,3],[2,7],[7,8],[8,9],[9,10],[10,3],[3,4],[4,5],[5,6],[6,20],[20,11],[11,4],[11,3],[11,13],[13,12],[12,10],[13,14],[13,17],[17,18],[18,19],[19,16],[16,15],[15,9],[15,10],[17,19],[14,18],[12,21],[21,13],[16,22],[22,15],[20,13]];
+const T=[{lon:6.2,lat:49.3},{lon:3.3,lat:46.3},{lon:5.1,lat:45.6}];
+const TL=['ZONE U OU AU','POSTE 400 kV < 5 KM','12 À 40 HA · 100 MW'];
+function inP(x,y,P){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const[xi,yi]=P[i],[xj,yj]=P[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c}return c}
+const D2R=Math.PI/180,vec=(lon,lat)=>{const a=lon*D2R,b=lat*D2R;return[Math.cos(b)*Math.cos(a),Math.cos(b)*Math.sin(a),Math.sin(b)]};
+const dFr=[];for(let lo=-5;lo<=8.3;lo+=.19)for(let la=42.3;la<=51.2;la+=.15)if(inP(lo,la,FR))dFr.push(vec(lo,la));
+const dSph=[];for(let i=0,n=1400,g=Math.PI*(3-Math.sqrt(5));i<n;i++){const y=1-2*(i+.5)/n,r=Math.sqrt(1-y*y);dSph.push([r*Math.cos(g*i),r*Math.sin(g*i),y])}
+const dGr=[];for(let la=-80;la<=80;la+=5){const l=[];for(let lo=-180;lo<=180;lo+=4)l.push(vec(lo,la));dGr.push(l)}for(let lo=-180;lo<180;lo+=5){const l=[];for(let la=-85;la<=85;la+=4)l.push(vec(lo,la));dGr.push(l)}
+const dN=ND.map(n=>vec(...n)),dT=T.map(t=>vec(t.lon,t.lat));
+const dArc=ED.map(([a,b])=>{const A=dN[a],B=dN[b],ang=Math.acos(A[0]*B[0]+A[1]*B[1]+A[2]*B[2]),pts=[];for(let s=0;s<=14;s++){const u=s/14,x=A[0]+(B[0]-A[0])*u,y=A[1]+(B[1]-A[1])*u,z=A[2]+(B[2]-A[2])*u,m=Math.hypot(x,y,z),h=(1+ang*.3*Math.sin(Math.PI*u))/m;pts.push([x*h,y*h,z*h])}return pts});
+const cv=$('gcv');let dS=performance.now();
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1),w=Math.round(r.width*d),h=Math.round(r.height*d);if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return[c,r.width,r.height]}
+function drawD(t){const [c,W,H]=fit();if(!W)return;const tt=(t-dS)/1000,P=21,tc=RED?6:tt%P;
+ let z=tc<.4?0:tc<2.9?io((tc-.4)/2.5):tc<18.5?1:1-io((tc-18.5)/2.5);
+ const nar=W<640,fx=nar?W*.56:W*.64,fy=nar?H*.36:H*.4,aw=nar?W*.76:W*.52,ah=nar?H*.42:H*.58,R1=Math.min(aw/.168,ah/.158),R0=Math.min(W,H)*.34,R=R0*Math.pow(R1/R0,z);
+ const lon0=(2.6-80*Math.pow(1-z,1.4)+.5*Math.sin(tt*.23)*z)*D2R,lat0=(46.6-28*(1-z)+.3*Math.cos(tt*.19)*z)*D2R,cx=W/2+(fx-W/2)*z,cy=H/2+(fy-H/2)*z;
+ const cL=Math.cos(lon0),sL=Math.sin(lon0),cP=Math.cos(lat0),sP=Math.sin(lat0);
+ const pj=v=>{const x1=v[0]*cL+v[1]*sL,y1=-v[0]*sL+v[1]*cL,x2=x1*cP+v[2]*sP,z2=-x1*sP+v[2]*cP;return[cx+R*y1,cy-R*z2,x2]};
+ c.fillStyle='#000';c.fillRect(0,0,W,H);
+ c.strokeStyle='rgba(255,255,255,.09)';c.lineWidth=1;c.beginPath();for(const l of dGr){let p0=null;for(const v of l){const p=pj(v);if(p[2]>0&&p0&&p0[2]>0){c.moveTo(p0[0],p0[1]);c.lineTo(p[0],p[1])}p0=p}}c.stroke();
+ if(z<1){c.strokeStyle=`rgba(255,255,255,${.45*(1-z)})`;c.beginPath();c.arc(cx,cy,R,0,7);c.stroke();c.fillStyle=`rgba(255,255,255,${.32*(1-z)})`;for(const v of dSph){const p=pj(v);if(p[2]>0)c.fillRect(p[0],p[1],1,1)}}
+ const sy=((tt*.11)%1.25-.1)*H;
+ const sk=z<.35?6:z<.6?3:z<.8?2:1;for(let j=0;j<dFr.length;j+=sk){const v=dFr[j],p=pj(v);if(p[2]<=0||p[0]<-4||p[0]>W+4||p[1]<-4||p[1]>H+4)continue;const b=cl(1-Math.abs(p[1]-sy)/46);c.fillStyle=`rgba(255,255,255,${.34+.1*z+.56*b})`;const s=z<.8?1:b>.3?2:nar?1.2:1.5;c.fillRect(Math.round(p[0]-s/2),Math.round(p[1]-s/2),s,s)}
+ if(z>.98&&!RED){c.strokeStyle='rgba(255,255,255,.22)';c.beginPath();c.moveTo(40,sy);c.lineTo(W,sy);c.stroke();c.fillStyle='rgba(255,255,255,.55)';c.font='400 9.5px "JetBrains Mono",ui-monospace,monospace';c.fillText('BALAYAGE '+(51.1-sy/H*9).toFixed(2).replace('.',',')+'° N',W-140,sy-6)}
+ c.lineWidth=1;dArc.forEach((a,i)=>{c.strokeStyle=`rgba(255,255,255,${.12+.2*z})`;c.beginPath();let ok=0;a.forEach((v,k)=>{const p=pj(v);if(p[2]>0){k&&ok?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]);ok=1}else ok=0});c.stroke();
+  const u=(tt*.32+i*.137)%1,p=pj(a[Math.round(u*14)]);if(p[2]>0&&z>.5){c.fillStyle='#fff';c.fillRect(p[0]-1.5,p[1]-1.5,3,3)}});
+ dN.forEach((v,i)=>{const p=pj(v);if(p[2]<=0)return;c.fillStyle='#fff';c.fillRect(p[0]-2.5,p[1]-2.5,5,5);const q=(tt*.6+i*.37)%1;c.strokeStyle=`rgba(255,255,255,${(1-q)*.55*z})`;c.beginPath();c.arc(p[0],p[1],4+q*20,0,7);c.stroke()});
+ c.strokeStyle='rgba(255,255,255,.8)';dT.forEach(v=>{const p=pj(v);c.beginPath();c.moveTo(p[0],p[1]-6);c.lineTo(p[0]+6,p[1]);c.lineTo(p[0],p[1]+6);c.lineTo(p[0]-6,p[1]);c.closePath();c.stroke()});
+ if(z>.995){const rt=Math.max(0,tc-2.9),per=5.2,idx=Math.floor(rt/per)%3,lc=RED?4:rt%per,cur=pj(dT[idx]),prv=idx||rt>=per?pj(dT[(idx+2)%3]):[fx,fy],m=io(cl(lc/.9)),x=prv[0]+(cur[0]-prv[0])*m,y=prv[1]+(cur[1]-prv[1])*m,lk=cl((lc-.9)/.6),sz=74-48*ob(lk),T0=T[(idx+2)%3],T1=T[idx];
+  c.setLineDash([3,4]);c.strokeStyle='rgba(255,255,255,.3)';c.beginPath();c.moveTo(40,y);c.lineTo(W,y);c.moveTo(x,45);c.lineTo(x,H);c.stroke();c.setLineDash([]);
+  c.strokeStyle='#fff';c.lineWidth=1.5;const h=sz/2,q=Math.min(12,h*.5);c.beginPath();[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([a,b])=>{c.moveTo(x+a*h,y+b*(h-q));c.lineTo(x+a*h,y+b*h);c.lineTo(x+a*(h-q),y+b*h)});c.stroke();
+  if(lk<1){c.lineWidth=1;c.setLineDash([2,5]);c.beginPath();c.arc(x,y,h+10,tt*3,tt*3+4.4);c.stroke();c.setLineDash([])}
+  const jt=(1-lk)*.013,la=(T0.lat+(T1.lat-T0.lat)*m+(Math.random()-.5)*jt).toFixed(4).replace('.',','),lo=(T0.lon+(T1.lon-T0.lon)*m+(Math.random()-.5)*jt).toFixed(4).replace('.',',');
+  c.font='500 10px "JetBrains Mono",ui-monospace,monospace';c.fillStyle='#fff';c.fillText(lo+'° E',x+6,58);c.fillText(la+'° N',44,y-6);
+  if(lk>=1){const L=[`CIBLE 0${idx+1} · VERROUILLÉE`,TL[idx],`${T1.lat.toFixed(4).replace('.',',')} N   ${T1.lon.toFixed(4).replace('.',',')} E`,'CRITÈRES DRAKKAR · OK'],n=Math.floor((lc-1.5)*70);
+   c.font='500 10.5px "JetBrains Mono",ui-monospace,monospace';const w=Math.max(...L.map(s=>c.measureText(s).width))+22,bh=L.length*16+16;let bx=x+h+16,by=y-bh/2;if(bx+w>W-8)bx=x-h-16-w;by=cl(by,52,H-bh-70);
+   c.fillStyle='rgba(0,0,0,.88)';c.fillRect(bx,by,w,bh);c.strokeStyle='#fff';c.lineWidth=1;c.strokeRect(bx+.5,by+.5,w,bh);c.beginPath();c.moveTo(x+(bx>x?h:-h),y);c.lineTo(bx+(bx>x?0:w),y);c.stroke();c.fillRect(bx,by,w,2);
+   let left=n;L.forEach((s,k)=>{const v=s.slice(0,Math.max(0,left));left-=s.length;c.fillStyle=k===1?'#fff':'rgba(255,255,255,.75)';c.font=(k===1?'700 ':'400 ')+'10.5px "JetBrains Mono",ui-monospace,monospace';c.fillText(v,bx+11,by+22+k*16)})}}
+ if(t-(drawD.k||0)>500){drawD.k=t;$('dClk').textContent=new Date().toISOString().slice(11,19)+' UTC'+(nar?'':' · Z '+(z*100|0)+' %')}}
+function loop(t){if($('gate').hidden)return;drawD(t);requestAnimationFrame(loop)}
+if(RED)drawD(performance.now()+1e5);else requestAnimationFrame(loop);
+document.querySelectorAll('#gate [data-n]').forEach(el=>{const n=+el.dataset.n,t0=performance.now();const step=t=>{const k=RED?1:cl((t-t0)/1500);el.textContent=Math.round(n*oc(k)).toLocaleString('fr-FR');if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)});
+(function scramble(el){const w=el.textContent,G='01#/<>+=*KXRADZ',t0=performance.now();if(RED)return;const f=t=>{const k=(t-t0)/1100;el.textContent=[...w].map((c,i)=>k*w.length>i+1?c:k*w.length>i-3?G[Math.random()*G.length|0]:' ').join('');if(k<1.15)requestAnimationFrame(f);else el.textContent=w};requestAnimationFrame(f)})($('dWm'));
+})();
+function gateMsg(t){$('gatemsg').textContent=t}
+function gateLoading(){const lines=['> session ouverte ......... <b>'+esc(ME.email)+'</b>','> clé des données ......... <b>reçue</b>','> déchiffrement du cadastre','> postes RTE 400 et 225 kV','> suivi de l’équipe ....... <b>en direct</b>'];
+  $('authbox').innerHTML='<h3>Ouverture</h3><p class="hint">Déchiffrement en cours.</p><div class="g-load" id="gload"></div>';let i=0;
+  const next=()=>{const el=$('gload');if(!el)return;if(i<lines.length){el.insertAdjacentHTML('beforeend',lines[i++]+'\n');setTimeout(next,RED?0:220)}else el.insertAdjacentHTML('beforeend','<span class="cur"></span>')};next()}
+let started=false;
+function onSession(session){if(started||!session)return;started=true;ME=session.user;$('app').hidden=false;gateLoading();boot()}
+function openApp(){userUI();addBasemaps();const g=$('gate');g.classList.add('out');setTimeout(()=>{g.hidden=true},650);setTimeout(()=>{if(map)map.invalidateSize()},60);
+  let seen=false;try{seen=localStorage.getItem('drakkar-tour-'+ME.id)==='1'}catch(e){}if(!seen)setTimeout(()=>startTour(0),900)}
+function recoverUI(){$('authbox').innerHTML=`<h3>Nouveau mot de passe</h3><p class="hint">Choisissez-le, puis vous entrez.</p><form class="f" id="recf"><label>Nouveau mot de passe<input name="pw" type="password" minlength="8" autocomplete="new-password" required></label><button type="submit"><span>Enregistrer</span><span>→</span></button><div class="err" id="autherr" role="alert"></div></form>`;
+  $('recf').onsubmit=async e=>{e.preventDefault();const pw=e.target.pw.value;if(pw.length<8){$('autherr').textContent='8 caractères minimum.';return}const {data,error}=await sb.auth.updateUser({password:pw});if(error){$('autherr').textContent=error.message;return}history.replaceState(null,'',location.pathname);const s=(await sb.auth.getSession()).data.session;onSession(s)}}
+const RECOV=/type=recovery/.test(location.hash);
+sb.auth.onAuthStateChange((ev,session)=>{if(ev==='PASSWORD_RECOVERY'){recoverUI();return}if(ev==='SIGNED_OUT'){location.reload();return}if(session&&!RECOV)setTimeout(()=>onSession(session),0)});
+sb.auth.getSession().then(({data})=>{if(RECOV){recoverUI();return}if(data.session)onSession(data.session);else authUI('connexion')});
+function userUI(){const p=PROFILES[ME.id]||{};$('mebtn').textContent=initials(ME.id);$('meinfo').innerHTML=`<b style="color:var(--fg)">${esc(p.nom||'')}</b><br>${esc(ME.email||'')}`;
+  const th=()=>$('themebtn').textContent=document.documentElement.dataset.theme==='light'?'Passer en sombre':'Passer en clair';th();
+  $('mebtn').onclick=e=>{e.stopPropagation();const m=$('memenu');m.hidden=!m.hidden;$('mebtn').setAttribute('aria-expanded',!m.hidden)};
+  document.addEventListener('click',e=>{if(!e.target.closest('.me'))$('memenu').hidden=true});
+  $('themebtn').onclick=()=>{const v=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=v;try{localStorage.setItem('drakkar-theme',v)}catch(e){}th()};
+  $('logout').onclick=()=>sb.auth.signOut();
+  if(!$('memenu').querySelector('.formation'))$('memenu').insertAdjacentHTML('afterbegin','<button type="button" class="btn formation" id="tourbtn">Revoir la formation</button>');
+  $('tourbtn').onclick=()=>{$('memenu').hidden=true;startTour(0)};
+  const aide=document.querySelector('#v-aide .in h2');if(aide&&!$('tourbtn2')){aide.insertAdjacentHTML('afterend','<p><button type="button" class="btn pri" id="tourbtn2">Lancer la formation guidée (4 minutes)</button></p>');$('tourbtn2').onclick=()=>startTour(0)}}
+let basemapsOn=false;
+function addBasemaps(){if(basemapsOn||!map)return;basemapsOn=true;
+  const plan=L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'© OpenStreetMap © CARTO'});
+  const planc=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'© OpenStreetMap © CARTO'});
+  const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Esri World Imagery'});
+  const none=L.layerGroup();
+  L.control.layers({'Contours seuls':none,'Plan sombre':plan,'Plan clair':planc,'Satellite':sat},null,{position:'topright'}).addTo(map);none.addTo(map);
+  map.on('baselayerchange',e=>{base.eachLayer(l=>{if(l.setStyle&&l.eachLayer)l.setStyle({fillOpacity:e.layer===none?1:0})})})}
+
+/* ---------- formation guidée ---------- */
+const secBy=t=>[...document.querySelectorAll('#fiche .sec')].find(x=>(x.querySelector('h3')||{}).textContent?.startsWith(t));
+const firstSite=()=>{if(!VIS.length)return;if($('fiche').hidden||!current)openSite(VIS[0].id,true)};
+const TOUR=[
+ {big:1,title:()=>'Bienvenue, '+esc(((PROFILES[ME.id]||{}).nom||'').split(' ')[0]||'à bord')+'.',html:()=>`<p>Drakkar cherche le terrain de notre campus IA de 100 MW : <b>12 à 40 hectares, constructible, près d’un poste RTE 400 ou 225 kV</b>, même s’il n’est pas à vendre.</p><p>La machine a lu le cadastre des sociétés, la carte RTE, le PLU et les registres d’entreprises. Votre rôle : <b>appeler les propriétaires, noter ce qu’ils disent, et faire avancer les meilleurs sites</b>.</p><p>Cette formation montre chaque bouton, dans l’ordre où vous allez vous en servir. Comptez 4 minutes. Flèches du clavier pour avancer.</p>`},
+ {view:'carte',sel:'nav.tabs',title:'Les onglets',html:`<ul><li><b>Carte</b> : chercher et ouvrir les sites. Vous y passerez 90 % du temps.</li><li><b>Liste d’appels</b> : votre liste du jour, à copier.</li><li><b>Prospection</b> : tout ce que l’équipe a fait, les rappels du jour.</li><li><b>Courriers</b> : adresses des sièges pour écrire.</li><li><b>Équipe</b> : qui a fait quoi.</li></ul>`},
+ {view:'carte',sel:'#presets',title:'Étape 1 : une recherche prête',html:`<p><span class="click">Cliquez</span><b>Cœur de cible</b> pour commencer : terrains déjà bâtis ou industriels, propriétaire privé, zone constructible, à moins de 5 km d’un poste 400 kV.</p><p>Les autres boutons : <b>À vendre</b>, <b>Signaux récents</b> (société en difficulté, friche nouvelle), <b>Avec numéro</b>, <b>Tout</b>.</p>`},
+ {view:'carte',sel:'#q',title:'Étape 2 : chercher un nom',html:`<p>Tapez une <b>commune</b>, un <b>propriétaire</b>, un <b>SIREN</b>, un <b>dirigeant</b> ou le nom d’un <b>poste RTE</b>. La liste et la carte se filtrent à chaque lettre.</p><p>Exemple : « Saint-Avold » ou « Arkema ».</p>`},
+ {view:'carte',sel:'#ftoggle',title:'Étape 3 : les filtres fins',html:`<p><span class="click">Cliquez</span><b>Filtres</b> pour ouvrir le panneau :</p><ul><li>distance maximale au poste 400 kV (curseur) ;</li><li>surface minimale et maximale en hectares ;</li><li>région ;</li><li><b>Suivi : « Pas encore traité »</b> pour ne voir que les sites que personne n’a touchés ;</li><li>tri : priorité, distance, taille, signal récent.</li></ul><p>« Réinitialiser » remet tout à zéro.</p>`},
+ {view:'carte',sel:'.count',title:'Le compteur',html:`<p>Il dit combien de sites passent vos filtres, sur le total. Juste en dessous, la liste triée : <b>commencez toujours par le haut</b>.</p>`},
+ {view:'carte',sel:'#cards .card',title:'Lire une ligne',html:`<ul><li>Le <b>chiffre à gauche</b> est la priorité d’appel sur 100. En noir plein : 60 ou plus, à appeler en premier.</li><li>À droite : la distance au poste 400 kV.</li><li>Les étiquettes : type de site, <b>Tél.</b> si un numéro direct existe, <b>Récent</b> pour un signal daté, et le <b>statut avec les initiales</b> de celui qui l’a traité.</li></ul><p><span class="click">Cliquez</span>une ligne pour ouvrir sa fiche.</p>`},
+ {view:'carte',sel:'#map',title:'La carte',html:`<p>Chaque point est un site, coloré par type. <b>Points rouges : postes 400 kV</b>, gris : 225 kV. Plus le point est gros, plus la priorité est haute.</p><p>Molette pour zoomer, cliquez un point pour la fiche. En haut à droite, choisissez le fond : <b>Satellite</b> montre si le terrain est vide.</p>`},
+ {view:'carte',pre:firstSite,sel:'#fiche header',title:'La fiche du site',html:`<p>Tout ce qu’il faut pour un appel tient ici. <b>Précédent</b> et <b>Suivant</b> passent au site d’après dans la liste sans fermer la fiche : c’est le rythme de travail.</p>`},
+ {view:'carte',pre:firstSite,sel:()=>secBy('Qui appeler'),title:'Qui appeler',html:`<p>Le contact à joindre et son numéro, avec la source. <span class="click">Copier</span>met le numéro dans le presse-papier.</p><p>Pas de numéro ? Les boutons <b>Chercher le numéro</b>, <b>Pages Jaunes</b> et <b>LinkedIn</b> lancent la recherche. La <b>mairie</b> est toujours là en secours : elle sait qui possède le terrain.</p>`},
+ {view:'carte',pre:firstSite,sel:()=>secBy('Quoi dire'),title:'Pourquoi appeler, quoi dire',html:`<p>« Pourquoi appeler » résume l’intérêt du site et liste les questions à poser. « Quoi dire » donne <b>la phrase d’ouverture</b>, au propriétaire et à la mairie.</p><p>Règles : <b>ne citez jamais l’investisseur</b> au premier appel, <b>ne promettez aucun prix</b>. Le but : savoir qui décide et s’il écouterait une offre.</p><p>L’étiquette « Déduit » veut dire calculé par la machine : à confirmer au téléphone.</p>`},
+ {view:'carte',pre:firstSite,sel:'#fiche .linkgrid',title:'Regarder avant d’appeler',html:`<p>Dix secondes de vérification : <span class="click">Vue satellite</span>(terrain vide ou occupé ?), <span class="click">Cadastre</span>(les parcelles), <span class="click">Urbanisme</span>(le zonage), <span class="click">Ventes passées</span>(les prix du coin), <span class="click">Risques</span>(inondation, pollution).</p><p>Terrain inutilisable ? Passez-le en <b>Écarté</b>.</p>`},
+ {view:'carte',pre:firstSite,sel:'#suivi-sec',title:'Le plus important : noter',html:`<ol><li>Après l’appel, <span class="click">Cliquez</span>le <b>résultat en un clic</b> : Pas de réponse, Message laissé, Pas vendeur, Intéressé… Le statut se met à jour tout seul.</li><li>Écrivez une note (qui a répondu, ce qui a été dit), puis <b>Ajouter au journal</b>.</li><li>Fixez une <b>date de rappel</b> et un <b>responsable</b>.</li></ol><p>Chaque action est <b>signée de votre nom et datée</b>, et apparaît en direct chez l’équipe. Vous pouvez supprimer vos propres notes.</p>`},
+ {view:'carte',pre:firstSite,sel:()=>secBy('Propriétaires'),title:'Écrire au propriétaire',html:`<p>La société, son siège, ses dirigeants et sa surface. <span class="click">Cliquez</span><b>Rédiger le courrier</b> : la lettre se remplit toute seule avec votre nom. Copiez-la, imprimez, postez.</p><p>Puis <b>Marquer « courrier envoyé »</b> : c’est noté au journal.</p>`},
+ {view:'prospection',sel:'#prospection .statgrid',title:'Prospection : le tableau de bord',html:`<p>Tous les sites travaillés, par statut. <span class="click">Cliquez</span>un chiffre pour filtrer.</p><p>Chaque matin : <b>« À rappeler aujourd’hui ou en retard »</b>. Les dates en rouge sont en retard. « Mes sites » montre ce qui vous est confié.</p>`},
+ {view:'appels',sel:'#appels .tools',title:'La liste d’appels',html:`<p>Les sites que vous avez passés « À appeler », avec numéro, raison et GPS. <span class="click">Copier</span>pour l’envoyer par message ou l’imprimer.</p>`},
+ {view:'courriers',sel:'#courriers .tools',title:'Courriers en nombre',html:`<p>Les adresses de siège des propriétaires privés. <b>Enregistrer en fichier CSV</b> sort un tableau pour un publipostage Word ou Google Docs.</p>`},
+ {view:'equipe',sel:'#equipe .team',title:'L’équipe',html:`<p>Chaque inscrit, ses chiffres (sites, appels, notes, courriers) et le fil de toutes les actions. Changez votre nom affiché juste au-dessus.</p>`},
+ {view:'carte',sel:'#mebtn',title:'Votre compte',html:`<p>Vos initiales. <span class="click">Cliquez</span>pour <b>revoir cette formation</b>, passer en mode clair ou vous déconnecter.</p>`},
+ {big:1,view:'carte',title:'La routine en 6 gestes',html:`<ol><li><b>Prospection</b> : traitez d’abord les rappels du jour.</li><li><b>Carte</b> : Cœur de cible, filtre « Pas encore traité ».</li><li>Ouvrez le premier site, vérifiez la <b>vue satellite</b>.</li><li>Appelez avec <b>Quoi dire</b>.</li><li>Notez le <b>résultat en un clic</b> et une note.</li><li><b>Suivant →</b>, et on recommence.</li></ol><p>Un site intéressé ? Statut <b>En discussion</b> et prévenez l’équipe.</p>`}
+];
+let TI=0;
+function startTour(i){TI=i;$('tour').hidden=false;document.addEventListener('keydown',tourKey);window.addEventListener('resize',placeTour);document.addEventListener('scroll',placeTour,true);showStep()}
+function endTour(){$('tour').hidden=true;document.removeEventListener('keydown',tourKey);window.removeEventListener('resize',placeTour);document.removeEventListener('scroll',placeTour,true);try{localStorage.setItem('drakkar-tour-'+ME.id,'1')}catch(e){}}
+function tourKey(e){if(e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();stepGo(1)}else if(e.key==='ArrowLeft'){e.preventDefault();stepGo(-1)}else if(e.key==='Escape')endTour()}
+function stepGo(d){const n=TI+d;if(n<0)return;if(n>=TOUR.length){endTour();return}TI=n;showStep()}
+function stepEl(st){if(!st.sel)return null;return typeof st.sel==='function'?st.sel():document.querySelector(st.sel)}
+function showStep(){const st=TOUR[TI];if(st.view&&$('v-'+st.view).hidden)setView(st.view);if(st.pre)st.pre();
+  const c=$('tcard');const v=x=>typeof x==='function'?x():x;
+  c.className='t-card'+(st.big?' big':'');
+  c.innerHTML=`<div class="t-anim" style="display:grid;gap:10px"><div class="t-top"><span class="cap">Formation · ${String(TI+1).padStart(2,'0')} / ${TOUR.length}</span><button type="button" class="skip" id="tskip">${TI===TOUR.length-1?'Fermer':'Passer'}</button></div><div class="t-bar"><i style="width:${(TI+1)/TOUR.length*100}%"></i></div><h4>${v(st.title)}</h4>${v(st.html)}
+  <div class="t-btns"><span></span><div>${TI?'<button type="button" id="tprev">← Retour</button>':''}<button type="button" class="go" id="tnext">${TI===0?'Commencer la visite →':TI===TOUR.length-1?'Au travail →':'Suivant →'}</button></div></div></div>`;
+  $('tnext').onclick=()=>stepGo(1);if($('tprev'))$('tprev').onclick=()=>stepGo(-1);$('tskip').onclick=endTour;
+  const el=stepEl(st);if(el){const sc=el.closest('.fbody,.page,#cards');if(sc){const r=el.getBoundingClientRect(),q=sc.getBoundingClientRect();if(r.top<q.top||r.bottom>q.bottom)sc.scrollTo({top:sc.scrollTop+r.top-q.top-(innerWidth<641?12:60),behavior:RED?'auto':'smooth'})}}
+  setTimeout(placeTour,RED?0:st.pre?700:60);placeTour();$('tnext').focus({preventScroll:true})}
+function placeTour(){if($('tour').hidden)return;const st=TOUR[TI],h=$('thole'),c=$('tcard');const el=stepEl(st);
+  if(st.big||!el){h.className='t-hole none';c.style.left=Math.max(16,(innerWidth-c.offsetWidth)/2)+'px';c.style.top=Math.max(16,(innerHeight-c.offsetHeight)/2)+'px';return}
+  const r=el.getBoundingClientRect(),p=6;const R={l:Math.max(4,r.left-p),t:Math.max(4,r.top-p),w:Math.min(innerWidth-8,r.width+p*2),h:Math.min(innerHeight-8,r.height+p*2)};
+  h.className='t-hole';Object.assign(h.style,{left:R.l+'px',top:R.t+'px',width:R.w+'px',height:R.h+'px'});
+  const cw=c.offsetWidth,ch=c.offsetHeight,g=14;let x,y;
+  if(R.l+R.w+g+cw<innerWidth-8){x=R.l+R.w+g;y=R.t}else if(R.l-g-cw>8){x=R.l-g-cw;y=R.t}else if(R.t+R.h+g+ch<innerHeight-8){x=R.l;y=R.t+R.h+g}else{x=R.l;y=Math.max(8,R.t-g-ch)}
+  x=Math.min(Math.max(8,x),innerWidth-cw-8);y=Math.min(Math.max(8,y),innerHeight-ch-8);c.style.left=x+'px';c.style.top=y+'px'}
+
+})();
+</script>
+</body></html>
