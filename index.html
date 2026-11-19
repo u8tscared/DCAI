@@ -980,6 +980,50 @@ nav.tabs button{font-size:11.5px;text-transform:uppercase}
 .t-card .t-anim{animation:tin .35s ease-out}
 @keyframes tin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (max-width:640px){.t-card{left:16px!important;right:16px;top:auto!important;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:auto}}
+/* Nucléaire */
+#v-nucleaire[hidden]{display:none!important}
+.nucs{display:grid;min-height:0;grid-template-columns:300px minmax(0,1fr) minmax(0,1fr)}
+.nl{border-right:1px solid var(--line);overflow-y:auto;background:var(--panel);display:flex;flex-direction:column}
+.nl .hd{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.nl .hd h2{margin:0;font-size:16px}
+.nrow{display:grid;grid-template-columns:28px 1fr auto;gap:2px 10px;padding:10px 16px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;cursor:pointer;width:100%;color:var(--fg)}
+.nrow:hover{background:var(--raised)}.nrow[aria-current="true"]{background:var(--blue-soft)}
+.nrow .r{font:500 12px var(--mono);color:var(--muted);grid-row:1/3;padding-top:2px}
+.nrow b{font-size:14px}.nrow .p{font:600 14px var(--mono)}
+.nrow .m{grid-column:2/4;font-size:12px;color:var(--muted)}
+.nrow .bar{grid-column:2/4;height:4px;background:var(--line)}.nrow .bar i{display:block;height:100%;background:var(--green)}
+.nd{overflow-y:auto;padding:18px 22px 40px;display:grid;align-content:start;gap:0;min-width:0}
+.nd h2{margin:0;font-size:22px;letter-spacing:-.01em}
+.nm{position:relative;min-width:0;border-left:1px solid var(--line)}
+#nmap{position:absolute;inset:0;background:var(--sea)}
+.nm .legend{left:12px;bottom:12px}
+.big4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.big4 div{background:var(--raised);padding:10px 12px;display:grid;gap:2px}.big4 b{font:600 17px var(--mono);font-variant-numeric:tabular-nums}.big4 span{font-size:11.5px;color:var(--muted)}
+.lvl{font:600 11px var(--mono);padding:1px 6px;border:1px solid currentColor}
+.lvl.lo{color:var(--green)}.lvl.mi{color:var(--amber)}.lvl.hi{color:var(--red)}
+.zt{width:100%;border-collapse:collapse;font-size:12.5px}
+.zt th{font-weight:500;color:var(--muted);text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+.zt td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.zt td.num{font-family:var(--mono);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.zt tr.zr{cursor:pointer}.zt tr.zr:hover td{background:var(--panel)}.zt tr.zr[aria-current="true"] td{background:var(--blue-soft)}
+.zn{display:inline-grid;place-items:center;width:20px;height:20px;font:600 11px var(--mono);background:var(--blue);color:#fff}
+.zt .lk{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:3px}.zt .lk a{color:var(--blue);font-size:12px}
+.flag{color:var(--amber);font-size:11.5px;display:block}
+.ftype{font:500 10.5px var(--mono);padding:1px 5px;border:1px solid currentColor;color:var(--amber);white-space:nowrap}
+.ftype.soc{color:var(--muted)}.ftype.pub{color:var(--violet)}
+.src2{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12.5px}.src2 b{font:500 11px var(--mono);padding:1px 6px;align-self:start}
+.src2 b.v{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green)}.src2 b.e{background:color-mix(in srgb,var(--amber) 16%,transparent);color:var(--amber)}
+details.law{border:1px solid var(--line);padding:10px 12px;background:var(--raised)}details.law summary{cursor:pointer;font-weight:600;font-size:13.5px}
+details.law p,details.law li{font-size:13px;line-height:1.5}details.law ul{padding-left:18px;margin:6px 0}
+@media (max-width:1180px){.nucs:not([hidden]){display:block;overflow-y:auto}.nl{max-height:46vh;border-right:0;border-bottom:1px solid var(--line)}.nd{overflow:visible}.nm{height:62vh;border-left:0;border-top:1px solid var(--line)}}
+@media (max-width:760px){.big4{grid-template-columns:1fr 1fr}.nd{padding:16px}.nm .legend{display:none}}
+.zt td:nth-child(5){min-width:120px}
+.nucs .note{font-size:12.5px;color:var(--muted);margin:0}.nucs .tw{overflow-x:auto}.nucs .sec{display:grid;gap:10px;padding:16px 0;border-bottom:1px solid var(--line)}
+.nucs .sec h3{margin:0;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.nucs .sw{width:10px;height:10px;display:inline-block;flex:none}.nucs .sw.r{border-radius:50%}.nucs .legend div{display:flex;align-items:center;gap:8px}
+.nucs .kv{grid-template-columns:150px 1fr;font-size:13px}.nucs .kv>span:nth-child(odd){color:var(--muted)}
+.nucs .tag{border-color:currentColor}.zn{background:var(--fg);color:var(--bg)}.nrow .bar i{background:var(--fg)}
+
 @media (prefers-reduced-motion:reduce){.gate *,.tour *{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}}
 
 </style>
@@ -1013,6 +1057,7 @@ nav.tabs button{font-size:11.5px;text-transform:uppercase}
   <div class="brand"><h1>DRAKKAR</h1><span id="gen">Campus IA 100 MW · France</span></div>
   <nav class="tabs" aria-label="Vues">
     <button type="button" data-view="carte" aria-current="true">Carte</button>
+    <button type="button" data-view="nucleaire">Nucléaire</button>
     <button type="button" data-view="appels">Liste d’appels <span class="mono" id="n-liste"></span></button>
     <button type="button" data-view="prospection">Prospection <span class="mono" id="n-pros"></span></button>
     <button type="button" data-view="courriers">Courriers</button>
@@ -1060,6 +1105,20 @@ nav.tabs button{font-size:11.5px;text-transform:uppercase}
   </div>
 </main>
 
+  <section class="nucs" id="v-nucleaire" hidden aria-label="Centrales nucléaires et terrains libres autour">
+    <div class="nl"><div class="hd"><h2>Autour des centrales nucléaires</h2><p class="note">18 centrales en service et Fessenheim (arrêtée en 2020). Classées par potentiel : terrain vide et plat près d'un poste, peu d'industrie qui consomme déjà la puissance.</p></div><div id="nlist"></div></div>
+    <div class="nd" id="ndet"></div>
+    <div class="nm"><div id="nmap" role="application" aria-label="Carte autour de la centrale"></div>
+      <div class="legend" aria-hidden="true">
+        <div><span class="sw" style="background:color-mix(in srgb,var(--green) 35%,transparent);border:1px solid var(--green)"></span>Terrain libre (sans bâti, plat, ouvert)</div>
+        <div><span class="sw" style="border:2px solid var(--blue)"></span>Secteur retenu (36 ha)</div>
+        <div><span class="sw" style="background:var(--red)"></span>Poste 400 kV</div>
+        <div><span class="sw" style="background:var(--blue);width:6px;height:6px"></span>Poste 225 kV</div>
+        <div><span class="sw" style="background:var(--amber)"></span>Friche ou terrain repéré</div>
+        <div><span class="sw" style="background:var(--grey)"></span>Grande zone industrielle</div>
+        <div><span class="sw r" style="border:1.5px dashed var(--red)"></span>2 km autour des réacteurs</div>
+      </div></div>
+  </section>
 <section class="page" id="v-appels" hidden><div class="in" id="appels"></div></section>
 <section class="page" id="v-prospection" hidden><div class="in" id="prospection"></div></section>
 <section class="page" id="v-equipe" hidden><div class="in" id="equipe"></div></section>
@@ -1480,8 +1539,90 @@ function openLetter(s,i){const o=s.own[i];const me=Object.assign({nom:(PROFILES[
   $('lcopy').onclick=()=>copy($('letter').value,'Courrier copié');$('ladr').onclick=()=>copy(o.den+'\n'+o.adr,'Adresse copiée');
   $('lsent').onclick=()=>{setSuivi(s.id,{statut:'courrier'},{type:'courrier',extra:{texte:'courrier au siège de '+o.den}});m.hidden=true;toast('Courrier noté au journal')}}
 
+/* ---------- nucléaire ---------- */
+let NUC=null,NBY={};
+let nmap=null,nLay=null,nCur=null,nZ={};
+const IND=h=>h<700?['lo','faible']:h<1600?['mi','moyenne']:['hi','forte'];
+const BLT=b=>b<3?['lo','très peu bâti']:b<6?['mi','moyennement bâti']:['hi','assez bâti'];
+const nf=v=>Math.round(v).toLocaleString('fr-FR');
+const dk=v=>String(v).replace('.',',');
+const GP=(la,lo)=>`https://www.geoportail.gouv.fr/carte?c=${lo},${la}&z=15&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.PARCELLAIRE_EXPRESS::GEOPORTAIL:OGC:WMTS(1)&permalink=yes`;
+const GPU=(la,lo)=>`https://www.geoportail-urbanisme.gouv.fr/map/#tile=1&lon=${lo}&lat=${la}&zoom=15`;
+const GSAT=(la,lo)=>`https://www.google.com/maps/@${la},${lo},1500m/data=!3m1!1e3`;
+function nRows(){$('nlist').innerHTML=NUC.map((r,i)=>`<button type="button" class="nrow" data-k="${r.key}" ${nCur===r.key?'aria-current="true"':''}>
+ <span class="r">${i+1}</span><b>${esc(r.n)}${r.do?` <span class="tag" style="color:var(--amber);margin:0 0 0 4px">arrêtée</span>`:''}</b><span class="p" title="Potentiel sur 100">${r.pot}</span>
+ <span class="m">${r.nok?r.nok+' secteur'+(r.nok>1?'s':'')+' près d’un poste':'aucun secteur près d’un poste'} · industrie ${IND(r.ind_ha)[1]} · ${r.nfr} friche${r.nfr>1?'s':''} ou terrain${r.nfr>1?'s':''}</span>
+ <span class="bar"><i style="width:${r.pot}%"></i></span></button>`).join('')}
+$('nlist').onclick=e=>{const b=e.target.closest('.nrow');if(b)selNuc(b.dataset.k)};
+function zPoste(z){const a=[];if(z.d4<10)a.push(`400 kV ${esc(z.p4)} · <span class="mono">${dk(z.d4)} km</span>`);if(z.d2<3||!a.length)a.push(`225 kV ${esc(z.p2)} · <span class="mono">${dk(z.d2)} km</span>`);return a.join('<br>')}
+function law(){return `<details class="law"><summary>Terres agricoles : la piste « des 30 ans »</summary>
+<p>Presque tout le terrain libre de cette carte est agricole. Trois mécanismes peuvent le débloquer. Je ne sais pas encore lequel tu avais en tête.</p>
+<ul>
+<li><b>Bien sans maître.</b> Un terrain qui fait partie d’une succession ouverte depuis plus de 30 ans, sans héritier qui se manifeste, peut être pris par la commune (article L1123-1 du code général de la propriété des personnes publiques). La commune peut ensuite le vendre. La loi du 21 février 2022 a modifié ce délai dans certains cas (à vérifier précisément). Ce sont souvent de petites parcelles, utiles pour compléter un terrain. Il faut passer par la mairie : les fichiers publics n’affichent pas les propriétaires particuliers.</li>
+<li><b>Bail rural.</b> La plupart des terres agricoles sont louées à un fermier, avec un bail de 9 ans renouvelé presque automatiquement. Le propriétaire peut pourtant résilier à tout moment les parcelles classées constructibles au PLU (article L411-32 du code rural) : préavis d’un an, indemnité au fermier comme en expropriation. Une terre « bloquée » par un fermier se libère donc dès qu’elle passe en zone constructible.</li>
+<li><b>Zéro artificialisation nette.</b> La loi Climat et résilience de 2021 fixe environ 30 ans pour arriver à zéro en 2050, avec une baisse de moitié d’ici 2031. Chaque commune a donc une enveloppe limitée de terres à construire. Un data center reconnu « projet d’intérêt national majeur » par décret (loi de simplification de la vie économique, article L300-6-2 du code de l’urbanisme) passe par une procédure de l’État. Effet exact sur l’enveloppe de la commune à vérifier.</li></ul>
+<p class="note">Pour repérer ces terres près d’une centrale : ouvrir le lien « PLU » d’un secteur. Une zone AU ou U = bail résiliable. Une zone A = il faut une révision du PLU ou une procédure de l’État. Pour les biens sans maître, demander à la mairie et à la SAFER du département.</p></details>`}
+function nfr(f){if(f.src!=='radar')return f;const s=byId[f.id];return {...f,n:s?s.n:(f.ci||'Site du Radar'),own:s&&s.own&&s.own[0]?s.own[0].den:'',ha:f.ha??(s&&s.ha),inRadar:!!s}}
+function renderNuc(r){r={...r,friches:r.friches.map(nfr)};
+  const ind=IND(r.ind_ha),bl=BLT(r.built20),ok=r.zones.filter(z=>z.ok),best=ok[0];
+  const p4=r.postes.filter(p=>p.kv==400),p2=r.postes.filter(p=>p.kv==225);
+  const read=best?`Meilleur secteur à ${esc(best.com||'?')} : ${best.d4<5?`à ${dk(best.d4)} km du poste 400 kV ${esc(best.p4)}`:`à ${dk(best.d2)} km du poste 225 kV ${esc(best.p2)}`}, le premier bâtiment est à ${nf(best.dh)} m, et la plaine libre autour fait ${nf(best.comp)} ha d’un seul tenant.`:`Près des postes, il reste ${nf(r.free_ok_ha)} ha de terrain libre, mais en petits morceaux : aucun carré de 36 ha sans bâtiment, avec la première maison à plus de 450 m, à moins de 5 km d’un poste 400 kV ou 3 km d’un 225 kV. ${r.free_ha<1000?'Le relief et la forêt laissent très peu de place.':'La vallée est déjà très occupée.'} Les secteurs ci-dessous sont les moins mauvais, plus loin du réseau. Ici, les friches sont la meilleure piste.`;
+  $('ndet').innerHTML=`<div class="sec" style="padding-top:0"><div><span class="tag" style="color:var(--fg)">Nucléaire</span>${r.do?`<span class="tag" style="color:var(--amber)">Arrêtée en ${r.do}</span>`:''}<span class="tag" style="color:var(--green)">Potentiel ${r.pot}/100</span></div>
+   <h2>${esc(r.n)}</h2><p class="note">${nf(r.mw)} MW · ${r.u} réacteur${r.u>1?'s':''} · mise en service ${r.di}${r.do?' · fermée en '+r.do+' : le poste 400 kV '+esc((p4[0]||{}).n||'')+' reste en place et n’évacue plus de production':''}</p>
+   <div class="big4"><div><b>${nf(r.free_ok_ha)} ha</b><span>terrain libre près d’un poste (400 kV &lt; 5 km ou 225 kV &lt; 3 km)</span></div><div><b>${nf(r.free_ha)} ha</b><span>terrain libre dans 20 km</span></div><div><b>${dk(r.built20)} %</b><span>surface bâtie dans 20 km <span class="lvl ${bl[0]}">${bl[1]}</span></span></div><div><b>${nf(r.ind_ha)} ha</b><span>zones industrielles dans 20 km <span class="lvl ${ind[0]}">${ind[1]}</span></span></div></div>
+   <p style="margin:0;font-size:13.5px;line-height:1.5">${read}</p>
+   <p class="note">Consommation locale : ${ind[0]==='lo'?'peu d’industrie autour, la puissance de la centrale part presque entièrement sur le réseau national.':ind[0]==='mi'?'quelques zones industrielles, consommation locale modérée.':'gros bassin industriel autour, une partie de la puissance est déjà consommée sur place et le réseau local est plus chargé.'} Estimation à partir des surfaces industrielles cartographiées, pas des consommations réelles (non publiées).</p></div>
+  <div class="sec"><h3>Secteurs vides les mieux placés</h3>
+   <div class="tw"><table class="zt"><thead><tr><th></th><th>Commune</th><th>Poste le plus proche</th><th>Habitations</th><th>Terrain</th><th class="num">Note</th></tr></thead><tbody>
+   ${r.zones.map((z,i)=>`<tr class="zr" data-z="${i}"><td><span class="zn">${i+1}</span></td><td><b>${esc(z.com||'?')}</b><br><span class="note">${dk(z.dpl)} km de la centrale</span><div class="lk"><a href="${GP(z.la,z.lo)}" target="_blank" rel="noopener">Cadastre</a><a href="${GPU(z.la,z.lo)}" target="_blank" rel="noopener">PLU</a><a href="${GSAT(z.la,z.lo)}" target="_blank" rel="noopener">Satellite</a></div></td>
+    <td>${zPoste(z)}${z.ok?'':'<span class="flag">Hors critère réseau</span>'}</td>
+    <td>1er bâtiment à <span class="mono">${nf(z.dh)} m</span><br><span class="note">${z.nb1} bâtiment${z.nb1>1?'s':''} à moins de 1 km</span></td>
+    <td>pente ${dk(z.sl)} %<br><span class="note">plaine libre ${nf(z.comp)} ha</span>${z.h<8?'<span class="flag">Bas, près du fleuve : risque d’inondation à vérifier</span>':''}</td>
+    <td class="num"><b>${Math.round(z.sc)}</b></td></tr>`).join('')||'<tr><td colspan="6" class="note">Aucun terrain libre de 36 ha d’un seul tenant dans 20 km.</td></tr>'}
+   </tbody></table></div>
+   <p class="note">Chaque secteur est un carré de 600 m sur 600 m (36 ha) sans aucun bâtiment, ouvert (champs, prairies) et plat, à plus de 2 km des réacteurs. Assez pour 15 à 20 ha avec des marges. Cliquez sur une ligne pour le voir sur la carte.</p></div>
+  <div class="sec"><h3>Postes RTE dans 20 km</h3><div class="kv">${[...p4,...p2].slice(0,8).map(p=>`<span>${p.kv} kV${p.e==='A'?' (à construire)':''}</span><span>${esc(p.n)} · <span class="mono">${dk(p.d)} km</span></span>`).join('')}</div></div>
+  ${r.ind.length?`<div class="sec"><h3>Plus grandes zones industrielles dans 20 km</h3><div class="kv">${r.ind.map(x=>`<span class="mono">${nf(x.ha)} ha</span><span>${esc(x.n||'Zone industrielle sans nom')} · ${dk(x.d)} km</span>`).join('')}</div></div>`:''}
+  <div class="sec"><h3>Friches et terrains déjà repérés dans 20 km (${r.nfr})</h3>
+   ${r.friches.length?`<div class="tw"><table class="zt"><thead><tr><th>Type</th><th>Site</th><th class="num">Surface</th><th>Poste 400 kV</th><th>Propriétaire</th></tr></thead><tbody>
+   ${r.friches.map(f=>`<tr><td><span class="ftype ${f.tl==='Terrain de société'?'soc':f.tl==='Terrain public'?'pub':''}">${esc(f.tl)}</span></td><td><b>${esc(f.n)}</b><br><span class="note">${esc(f.ci||'')} · ${dk(f.d)} km de la centrale</span>${f.inRadar?`<div class="lk"><button type="button" class="linkbtn" data-open="${f.id}">Ouvrir la fiche</button></div>`:`<div class="lk"><a href="${GP(f.la,f.lo)}" target="_blank" rel="noopener">Cadastre</a></div>`}</td>
+    <td class="num">${f.ha?dk(f.ha)+' ha':'?'}</td><td>${f.d4!=null?esc(f.p4||'')+' · <span class="mono">'+dk(f.d4)+' km</span>':'?'}</td><td>${esc(f.own||(f.src==='osm'?'à identifier':''))}</td></tr>`).join('')}</tbody></table></div>`:'<p class="note">Aucune friche ni terrain repéré dans nos bases à moins de 20 km.</p>'}
+   <p class="note">Sources : Cartofriches (Cerema) et Radar foncier (cadastre DGFiP 2026, presse) déjà dans nos outils, plus les friches cartographiées dans OpenStreetMap. « Terrain de société » = grande parcelle d’une entreprise ou d’une collectivité, pas forcément libre ni à vendre.</p></div>
+  <div class="sec"><h3>Ce qui est vérifié, ce qui est estimé</h3><div class="src2">
+   <b class="v">vérifié</b><span>Centrales, puissance et dates : powerplantmatching. Postes RTE : ODRÉ (juin 2026), positions OpenStreetMap.</span>
+   <b class="v">vérifié</b><span>Occupation du sol à 10 m : ESA WorldCover 2021. Bâtiments : Overture Maps (OpenStreetMap et empreintes satellite), octobre 2026. Relief : Copernicus DEM 30 m.</span>
+   <b class="e">estimé</b><span>Note des secteurs, « consommation locale » (surfaces industrielles, pas les MWh), risque d’inondation (altitude au-dessus du fleuve, pas le PPRi).</span>
+   <b class="e">non vérifié</b><span>Zonage PLU, Natura 2000 et zones protégées, propriétaires des parcelles, capacité réelle des postes (seule une étude RTE la donne).</span>
+   <b class="e">choix</b><span>Exclusion de 2 km autour des réacteurs : c’est la zone d’évacuation immédiate du plan d’urgence (PPI), où l’État encadre les nouvelles constructions. À confirmer avec la préfecture.</span></div></div>
+  <div class="sec" style="border-bottom:0">${law()}</div>`;
+  $('ndet').scrollTop=0;
+  $('ndet').querySelectorAll('tr.zr').forEach(t=>t.onclick=e=>{if(e.target.closest('a'))return;selZone(+t.dataset.z)});
+  $('ndet').querySelectorAll('[data-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();const id=b.dataset.open;setView('carte');setTimeout(()=>{if(map)map.invalidateSize();openSite(id,true)},80)});
+}
+function nDraw(r){
+  if(!nmap){nmap=L.map('nmap',{zoomSnap:.5,minZoom:6,maxZoom:16});nmap.attributionControl.setPrefix(false).addAttribution('ESA WorldCover · Copernicus DEM · Overture Maps / © OpenStreetMap · RTE/ODRÉ');nLay=L.layerGroup().addTo(nmap)}
+  nLay.clearLayers();nZ={};
+  L.geoJSON(D.dep,{interactive:false,style:{color:css('--land-line'),weight:.7,fillColor:css('--land'),fillOpacity:1}}).addTo(nLay);
+  L.circle([r.la,r.lo],{radius:20000,color:css('--muted'),weight:1,dashArray:'2 6',fill:false,interactive:false}).addTo(nLay);
+  r.freepoly.forEach(p=>L.polygon(p,{color:css('--green'),weight:.6,fillColor:css('--green'),fillOpacity:.28,interactive:false}).addTo(nLay));
+  L.circle([r.la,r.lo],{radius:2000,color:css('--red'),weight:1.5,dashArray:'5 4',fillOpacity:.05,fillColor:css('--red'),interactive:false}).addTo(nLay);
+  r.ind.forEach(x=>{const m=L.circleMarker([x.la,x.lo],{radius:Math.max(4,Math.sqrt(x.ha)/2.2),color:css('--grey'),weight:1,fillColor:css('--grey'),fillOpacity:.5});m.bindTooltip(`${esc(x.n||'Zone industrielle')} · ${nf(x.ha)} ha`,{className:'tip',direction:'top'});m.addTo(nLay)});
+  r.friches.forEach(f=>{const m=L.marker([f.la,f.lo],{icon:L.divIcon({className:'',html:`<div style="width:10px;height:10px;background:${css('--amber')};border:1.5px solid ${css('--bg')}"></div>`,iconSize:[10,10],iconAnchor:[5,5]})});m.bindTooltip(`${esc(f.tl)} · ${esc(f.n)}${f.ha?' · '+dk(f.ha)+' ha':''}`,{className:'tip',direction:'top'});m.addTo(nLay)});
+  r.postes.forEach(p=>{const m=L.circleMarker([p.la,p.lo],{radius:p.kv==400?5:3.5,weight:1,color:css('--bg'),fillColor:css(p.kv==400?'--red':'--blue'),fillOpacity:1});m.bindTooltip(`${esc(p.n)} · ${p.kv} kV`,{className:'tip',direction:'top'});m.addTo(nLay)});
+  L.circleMarker([r.la,r.lo],{radius:7,weight:2,color:css('--fg'),fillColor:css('--bg'),fillOpacity:1}).bindTooltip(esc(r.n),{className:'tip',direction:'top',permanent:true}).addTo(nLay);
+  r.zones.forEach((z,i)=>{const p=L.polygon(z.poly,{color:css('--blue'),weight:2.2,fillColor:css('--blue'),fillOpacity:.12});p.bindTooltip(String(i+1),{permanent:true,direction:'center',className:'tip'});p.on('click',()=>selZone(i));p.addTo(nLay);nZ[i]=p});
+  nmap.invalidateSize();nmap.fitBounds(L.latLng(r.la,r.lo).toBounds(42000));
+}
+function selZone(i){const r=NBY[nCur],z=r&&r.zones[i];if(!z)return;
+  $('ndet').querySelectorAll('tr.zr').forEach(t=>t.toggleAttribute('aria-current',+t.dataset.z===i));
+  Object.entries(nZ).forEach(([k,p])=>p.setStyle({weight:+k===i?4:2.2,fillOpacity:+k===i?.3:.12}));
+  nmap.flyTo([z.la,z.lo],14,{duration:.6});}
+function selNuc(k){nCur=k;nRows();renderNuc(NBY[k]);nDraw(NBY[k]);try{localStorage.setItem('atlas-nuc',k)}catch(e){}}
+async function openNuc(){if(!NUC){$('ndet').innerHTML='<p class="note">Chargement…</p>';try{NUC=await (await fetch('nucleaire.json',{cache:'no-cache'})).json();NBY=Object.fromEntries(NUC.map(r=>[r.key,r]))}catch(e){$('ndet').innerHTML='<p class="note">Les données nucléaires n’ont pas pu être chargées.</p>';return}}
+  let k=null;try{k=localStorage.getItem('atlas-nuc')}catch(e){}if(nCur&&NBY[nCur]){setTimeout(()=>nmap&&nmap.invalidateSize(),60);return}selNuc(NBY[k]?k:NUC[0].key);setTimeout(()=>nmap&&nmap.invalidateSize(),60)}
+
 /* ---------- vues ---------- */
-function setView(v){['carte','appels','prospection','courriers','equipe','aide','methode'].forEach(k=>$('v-'+k).hidden=k!==v);document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===v));if(v==='carte'&&map)setTimeout(()=>map.invalidateSize(),30);renderViews();try{history.replaceState(null,'','#'+v)}catch(e){location.hash=v}}
+function setView(v){['carte','nucleaire','appels','prospection','courriers','equipe','aide','methode'].forEach(k=>$('v-'+k).hidden=k!==v);document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===v));if(v==='carte'&&map)setTimeout(()=>map.invalidateSize(),30);if(v==='nucleaire')openNuc();renderViews();try{history.replaceState(null,'','#'+v)}catch(e){location.hash=v}}
 document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('button');if(b)setView(b.dataset.view)};
 function callOf(s){const c=s.call&&s.call.tel?s.call:(s.call2||s.call||{});return c}
 function renderViews(){if(!D)return;
@@ -1523,7 +1664,7 @@ async function boot(){
   $('gen').textContent='Campus IA 100 MW · données du '+frdate(D.gen);
   await initDb();openApp();
   F.types=F.types.filter(t=>TYPE[t]);initFilters();initMap();update();
-  const h=(location.hash||'').slice(1);if(['appels','prospection','courriers','equipe','aide','methode'].includes(h))setView(h);
+  const h=(location.hash||'').slice(1);if(['nucleaire','appels','prospection','courriers','equipe','aide','methode'].includes(h))setView(h);
   renderViews();
 }
 /* ---------- portail : animation, session, compte ---------- */
