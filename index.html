@@ -672,11 +672,11 @@ svg.leaflet-image-layer.leaflet-interactive path {
 /* Layout : filtres | liste des sites | carte ; la fiche d'un site s'ouvre en panneau par-dessus la carte */
 
 /* Layout : barre haute | filtres + liste triée par priorité d'appel | carte ; la fiche d'appel s'ouvre en panneau à droite */
-:root{--bg:#000000; --panel:#0a0a0a; --raised:#111111; --fg:#f2f2ee; --muted:#8e8e89; --line:#262626; --blue:#f2f2ee; --blue-soft:#1a1a1a; --red:#ff4d4f; --red-soft:#2a1010; --amber:#e9a23b; --amber-soft:#2a2010; --green:#45c48f; --green-soft:#0f2a1e; --violet:#a58cff; --teal:#4cc4d8; --grey:#62625e; --ink:#bdbdb8; --land:#0a0a0a; --land-line:#3a3a37; --shade:rgba(0,0,0,.6); color-scheme:dark;
+:root{--bg:#000000; --panel:#0a0a0a; --raised:#111111; --fg:#f2f2ee; --muted:#8e8e89; --line:#262626; --blue:#f2f2ee; --blue-soft:#1a1a1a; --red:#ff4d4f; --red-soft:#2a1010; --amber:#e9a23b; --amber-soft:#2a2010; --green:#45c48f; --green-soft:#0f2a1e; --violet:#a58cff; --teal:#4cc4d8; --grey:#62625e; --ink:#bdbdb8; --nuc:#ff8a3d; --land:#0a0a0a; --land-line:#3a3a37; --shade:rgba(0,0,0,.6); color-scheme:dark;
   --sans:"Inter Tight","Helvetica Neue",Arial,system-ui,sans-serif;
   --disp:"Space Grotesk","Helvetica Neue",Arial,system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
-:root[data-theme="light"]{--bg:#ffffff; --panel:#f5f5f3; --raised:#ffffff; --fg:#0a0a0a; --muted:#5d5d5a; --line:#dcdcd8; --blue:#0a0a0a; --blue-soft:#ededea; --red:#d92128; --red-soft:#fdebec; --amber:#a86400; --amber-soft:#fbf1df; --green:#0f8a5f; --green-soft:#e3f5ee; --violet:#6b3fd1; --teal:#0a7f93; --grey:#8a8a86; --ink:#2b2b29; --land:#f1f1ee; --land-line:#cfcfca; --shade:rgba(0,0,0,.35); color-scheme:light}
+:root[data-theme="light"]{--bg:#ffffff; --panel:#f5f5f3; --raised:#ffffff; --fg:#0a0a0a; --muted:#5d5d5a; --line:#dcdcd8; --blue:#0a0a0a; --blue-soft:#ededea; --red:#d92128; --red-soft:#fdebec; --amber:#a86400; --amber-soft:#fbf1df; --green:#0f8a5f; --green-soft:#e3f5ee; --violet:#6b3fd1; --teal:#0a7f93; --grey:#8a8a86; --ink:#2b2b29; --nuc:#c2410c; --land:#f1f1ee; --land-line:#cfcfca; --shade:rgba(0,0,0,.35); color-scheme:light}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.45;margin:0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -1026,6 +1026,101 @@ details.law p,details.law li{font-size:13px;line-height:1.5}details.law ul{paddi
 
 @media (prefers-reduced-motion:reduce){.gate *,.tour *{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}}
 
+
+.qv{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px}
+.qv b{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border:1px solid currentColor}
+.qv b.ok{color:var(--green)}.qv b.no{color:var(--red)}
+.qlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.qlist li{display:grid;grid-template-columns:18px 1fr;gap:8px;font-size:13px;line-height:1.4}
+.qlist li i{font-style:normal;font:600 12px var(--mono);text-align:center}
+.qlist li.ok i{color:var(--green)}.qlist li.no i{color:var(--red)}.qlist li.warn i{color:var(--amber)}.qlist li.na i{color:var(--muted)}
+.qlist li small{display:block;color:var(--muted);font-size:12px}
+.tag.watch{--c:var(--muted)}.tag.sell{--c:var(--green)}
+.fin{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12.5px;margin-top:4px}.fin span:nth-child(odd){color:var(--muted)}
+.dirs{margin:4px 0 0;padding:0;list-style:none;font-size:12.5px}.dirs li{display:flex;gap:6px;flex-wrap:wrap}.dirs .age{font:500 11px var(--mono);padding:0 5px;border:1px solid var(--line)}.dirs .age.old{border-color:var(--green);color:var(--green)}
+
+/* ---------- Drakkar : téléphone ---------- */
+.mswitch,.fact,nav.tabs .tmore{display:none}
+a.tel{color:inherit;text-decoration:none}
+a.tel:hover{text-decoration:underline}
+.telc a{color:inherit;text-decoration:none;white-space:nowrap}
+@media (max-width:760px){
+  html,body{overscroll-behavior:none}
+  .app{padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+  header.top{flex-wrap:nowrap;gap:10px;padding-block:8px;position:relative;z-index:1450}
+  .brand{flex-wrap:nowrap;min-width:0;flex:1;gap:8px;align-items:baseline}
+  .brand h1{font-size:16px}
+  .brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;min-width:0}
+  .kpis{display:none}
+  .av{width:40px;height:40px;font-size:12px}
+  .memenu{position:fixed;right:12px;left:12px;top:60px}
+  .memenu .btn{min-height:46px}
+  /* barre d'onglets en bas, au pouce */
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:1400;display:grid;grid-template-columns:repeat(20,minmax(0,1fr));border:0;border-top:1px solid var(--fg);background:var(--bg);padding-bottom:env(safe-area-inset-bottom,0px);overflow:visible;max-width:none}
+  nav.tabs button{grid-column:span 4;white-space:normal;min-height:58px;padding:6px 2px;font-size:10px;letter-spacing:.03em;line-height:1.15;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center}
+  nav.tabs button .mono{font-size:10px;opacity:.75}
+  nav.tabs [data-view=carte]{order:1}nav.tabs [data-view=appels]{order:2}nav.tabs [data-view=prospection]{order:3}nav.tabs [data-view=nucleaire]{order:4}
+  nav.tabs .tmore{display:flex;order:5;border-right:0}
+  nav.tabs [data-view=courriers],nav.tabs [data-view=equipe],nav.tabs [data-view=aide],nav.tabs [data-view=methode]{display:none;order:0;grid-column:span 5;border-bottom:1px solid var(--line)}
+  nav.tabs.open [data-view=courriers],nav.tabs.open [data-view=equipe],nav.tabs.open [data-view=aide],nav.tabs.open [data-view=methode]{display:flex}
+  nav.tabs.open .tmore{background:var(--fg);color:var(--bg)}
+  /* carte : liste plein écran, carte à la demande */
+  main.carte{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  main.carte .side,main.carte .mapwrap{grid-area:1/1;order:0}
+  main.carte .side{border-top:0;padding-bottom:76px}
+  main.carte .mapwrap{visibility:hidden}
+  main.carte .mapwrap .fiche{visibility:visible}
+  body.mmap main.carte .mapwrap{visibility:visible;z-index:5}
+  body.mmap main.carte .side{visibility:hidden}
+  .mswitch{display:flex;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:1300;border:1px solid var(--fg);background:var(--bg);box-shadow:0 6px 24px rgba(0,0,0,.18)}
+  .mswitch button{min-height:44px;min-width:92px;padding:0 16px;border:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .mswitch button[aria-pressed=true]{background:var(--fg);color:var(--bg)}
+  main.carte:has(.fiche:not([hidden])) .mswitch{display:none}
+  .count{position:sticky;top:0;z-index:3;background:var(--bg)}
+  /* filtres : une ligne qui défile au doigt */
+  .filters{padding:10px 12px}
+  .filters .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-12px;padding-inline:12px;-webkit-overflow-scrolling:touch}
+  .filters .chips::-webkit-scrollbar{display:none}
+  .filters .more .chips{flex-wrap:wrap;overflow:visible;margin-inline:0;padding-inline:0}
+  .chip{min-height:38px;flex:none;white-space:nowrap}
+  input,select,textarea{font-size:16px!important}
+  #q{min-height:44px;min-width:0;flex:1;width:auto}
+  .filters .frow{flex-wrap:nowrap}
+  .filters.collapsed div:has(> #f-type){display:none}
+  .filters .more{max-height:none;overflow:visible}
+  .filters{display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
+  .filters>*{min-width:0}
+  .flabel{margin-bottom:4px}
+  .btn,.linkbtn{min-height:40px}
+  .card{padding:12px 14px;min-height:64px}
+  /* fiche plein écran avec barre d'action */
+  .fiche{position:absolute;inset:0;width:100%;border-left:0;box-shadow:none;grid-template-rows:auto minmax(0,1fr) auto;z-index:1100}
+  .fiche header{padding:10px 14px 10px}
+  .fiche h2{font-size:19px}
+  .fiche .x{width:44px;height:44px;font-size:22px;flex:none}
+  .fiche .navrow{display:none}
+  .fbody{padding:0 14px 24px;-webkit-overflow-scrolling:touch}
+  .fact{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;border-top:1px solid var(--fg);background:var(--bg)}
+  .fact>*{min-height:56px;display:flex;align-items:center;justify-content:center;border:0;background:var(--bg);color:var(--fg);font-size:20px;text-decoration:none}
+  .fact .call{background:var(--fg);color:var(--bg);font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-transform:uppercase;gap:8px;padding:0 10px;text-align:center;line-height:1.2}
+  .fact .call.off{background:var(--bg);color:var(--fg);border-inline:1px solid var(--line)}
+  .tel{font-size:22px}
+  .telrow .btn{min-height:44px}
+  .leaflet-control-attribution{font-size:9px!important;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .leaflet-touch .leaflet-bar a{width:40px;height:40px;line-height:40px}
+  /* autres onglets */
+  .page{padding-bottom:24px}
+  .tbl{overflow-x:visible;border:0}
+  .tbl table,.tbl tbody,.tbl tr,.tbl td{display:block;width:auto!important;min-width:0!important}
+  .tbl thead{display:none}
+  .tbl tr{border:1px solid var(--line);margin-bottom:10px;padding:10px 12px;position:relative}
+  .tbl td{border:0!important;padding:3px 0!important}
+  .tbl td.mono:first-child{position:absolute;right:12px;top:10px;color:var(--muted)}
+  .tbl td.telc a{font-family:var(--mono);font-size:20px;display:inline-flex;align-items:center;min-height:44px}
+  #v-appels .tbl td.telc:last-child:not(:empty)::before{content:'Mairie ';font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:6px}
+  .toast{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .dlg{width:100%!important;max-width:none!important;height:100%;max-height:none!important}
+}
 </style>
 </head><body>
 <div class="gate" id="gate">
@@ -1064,6 +1159,7 @@ details.law p,details.law li{font-size:13px;line-height:1.5}details.law ul{paddi
     <button type="button" data-view="equipe">Équipe</button>
     <button type="button" data-view="aide">Mode d’emploi</button>
     <button type="button" data-view="methode">Méthode et sources</button>
+    <button type="button" class="tmore" aria-expanded="false">Plus</button>
   </nav>
   <div class="kpis">
     <div class="kpi"><b id="k-sites">…</b><span>sites affichés</span></div>
@@ -1081,6 +1177,8 @@ details.law p,details.law li{font-size:13px;line-height:1.5}details.law ul{paddi
     <div class="filters" id="filters">
       <div class="frow"><input id="q" type="search" placeholder="Commune, propriétaire, SIREN, poste RTE…" aria-label="Rechercher"><button type="button" class="btn" id="ftoggle">Filtres</button></div>
       <div><div class="flabel">Recherches prêtes</div><div class="chips" id="presets"></div></div>
+      <div><div class="flabel">Ciblage</div><div class="chips" id="f-cib"></div></div>
+      <div><div class="flabel">Poste 400 kV à moins de</div><div class="chips" id="f-d4"></div></div>
       <div><div class="flabel">Type de site</div><div class="chips" id="f-type"></div></div>
       <div class="more">
         <div style="display:grid;gap:10px">
@@ -1098,6 +1196,7 @@ details.law p,details.law li{font-size:13px;line-height:1.5}details.law ul{paddi
     <div class="count"><span id="count">Chargement des sites…</span><span id="count2"></span></div>
     <div class="cards" id="cards"><p class="empty">Les sites arrivent : cadastre, friches, centrales, data centers et terrains publics, triés par priorité d’appel.</p></div>
   </section>
+  <div class="mswitch" role="group" aria-label="Affichage"><button type="button" data-mm="list" aria-pressed="true">Liste</button><button type="button" data-mm="map" aria-pressed="false">Carte</button></div>
   <div class="mapwrap">
     <div id="map" role="application" aria-label="Carte des sites et des postes RTE"></div>
     <div class="legend" id="legend"></div>
@@ -1134,6 +1233,9 @@ details.law p,details.law li{font-size:13px;line-height:1.5}details.law ul{paddi
 <li><b>Notez le résultat.</b> Dans « Suivi de prospection », cliquez le résultat d’appel en un clic (Pas de réponse, Pas vendeur, Intéressé…), choisissez un statut, un responsable et une date de rappel, et écrivez une note. Chaque action est signée de votre nom et datée.</li>
 <li><b>Suivez l’équipe.</b> L’onglet « Prospection » liste tous les sites travaillés, avec les rappels du jour et les retards. L’onglet « Équipe » montre qui a fait quoi. Tout se met à jour en direct chez chacun. Le filtre « Pas encore traité » masque ce qui est déjà fait.</li>
 </ol>
+<h3>Le ciblage : appelable ou à surveiller</h3>
+<p>Chaque terrain passe neuf contrôles, visibles en haut de sa fiche : réseau (poste 400 kV), protection (Natura 2000, réserve, biotope, zone humide), inondation, habitations à moins de 300 m, surface d’un seul tenant d’au moins 10 ha, zonage du PLU, propriétaire (un grand groupe qui a une activité ouverte sur la commune ne vendra pas, une agence immobilière n’est pas le propriétaire), et pas de data center ni de projet à moins de 1,5 km. Un seul échec, ou un contrôle qu’on n’a pas pu faire, et le site passe « À surveiller » : il sort de la liste par défaut. Le filtre « Ciblage » en haut de la carte bascule entre « Appelables », « À surveiller » et « Tout ».</p>
+<p>Les « Signaux vendeur » font monter un site dans la liste : dirigeant de 60 ans et plus, procédure collective, société cessée, établissement fermé, résultat négatif, petite société qu’on pourrait racheter avec son terrain, friche ancienne, usine fermée.</p>
 <h3>À savoir</h3>
 <p>« Approche directe » veut dire que le terrain n’est pas annoncé à la vente : on propose d’acheter. L’étiquette « Déduit » signale un texte calculé par la machine, à vérifier au premier appel. La proximité d’un poste ne garantit pas la puissance : c’est RTE qui la confirme ensuite.</p>
 <p>Ne donnez pas le nom de l’investisseur au premier appel, et ne promettez pas de prix : l’objectif est de savoir qui décide et s’il écouterait une offre.</p>
@@ -1154,8 +1256,8 @@ const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(
 const fr=(x,n=1)=>x==null?'?':Number(x).toLocaleString('fr-FR',{maximumFractionDigits:n,minimumFractionDigits:0});
 const km=v=>v==null?'?':(v<1?Math.round(v*1000)+' m':fr(v)+' km');
 const frdate=d=>{if(!d)return'';const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return d;return (m[3]?m[3]+'/':'')+(m[2]?m[2]+'/':'')+m[1]};
-const TYPE={cad:['Cadastre, hors marché','--blue'],friche:['Friche recensée','--amber'],usine:['Usine fermée ou en procédure','--red'],centrale:['Centrale électrique','--violet'],dc:['Data center','--green'],public:['Terrain public','--teal'],annonce:['Annonce','--ink']};
-const TSHORT={cad:'Cadastre',friche:'Friche',usine:'Usine',centrale:'Centrale',dc:'Data center',public:'Public',annonce:'Annonce'};
+const TYPE={cad:['Cadastre, hors marché','--blue'],friche:['Friche recensée','--amber'],usine:['Usine fermée ou en procédure','--red'],centrale:['Centrale électrique','--violet'],dc:['Data center','--green'],public:['Terrain public','--teal'],annonce:['Annonce','--ink'],nuc:['Centrale nucléaire','--nuc']};
+const TSHORT={cad:'Cadastre',friche:'Friche',usine:'Usine',centrale:'Centrale',dc:'Data center',public:'Public',annonce:'Annonce',nuc:'Nucléaire'};
 const VENTE={o:'À vendre',p:'Peut-être à vendre',n:'Pas en vente, approche directe'};
 const VSHORT={o:'À vendre',p:'Peut-être',n:'Approche directe'};
 const FI={v:['Vérifié','Écrit dans la source citée'],d:['Déduit','Texte construit à partir des données, à confirmer au téléphone'],c:['À confirmer','Information ancienne ou incomplète']};
@@ -1170,14 +1272,17 @@ function copy(text,label){const done=()=>toast(label||'Copié');try{navigator.cl
   function fallback(){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){toast('Sélectionnez le texte pour le copier')}ta.remove()}}
 
 /* ---------- filtres ---------- */
-const F=Object.assign({q:'',types:['cad','friche','usine','centrale','public','annonce'],vente:['o','p','n'],flags:[],d4:30,hamin:0,hamax:'',reg:'',st:'',sort:'pr'},LS.get('radar-f',{}));
-const FLAGS=[['tel','Numéro direct connu'],['adr','Adresse de courrier'],['rec','Signal récent'],['prive','Propriétaire privé'],['pubown','Propriétaire public'],['zu','Zone constructible au PLU'],['art','Déjà bâti ou industriel'],['seul','Un seul propriétaire']];
+const F=Object.assign({q:'',types:['cad','friche','usine','centrale','public','annonce','nuc'],vente:['o','p','n'],flags:[],d4:10,hamin:0,hamax:'',reg:'',st:'',sort:'pr',cib:'ok'},LS.get('radar-f',{}));
+if(!F.v2){if(!F.types.includes('nuc'))F.types.push('nuc');if(F.d4>=30)F.d4=10;F.cib='ok';F.v2=1}
+const FLAGS=[['vend','Vendeur probable'],['age','Dirigeant de 60 ans et plus'],['zae','Zone d’activité au PLU'],['tenant','Seul tenant de 10 ha et plus'],['rtez','Zone RTE prioritaire'],['nuc20','À moins de 20 km d’une centrale nucléaire'],['pl','Route principale à moins de 1 km'],['tel','Numéro direct connu'],['adr','Adresse de courrier'],['rec','Signal récent'],['prive','Propriétaire privé'],['pubown','Propriétaire public'],['zu','Zone constructible au PLU'],['art','Déjà bâti ou industriel'],['seul','Un seul propriétaire']];
 function saveF(){LS.set('radar-f',F)}
 function hasTel(s){return !!(s.call&&s.call.tel)}
 function mainOwner(s){return s.own&&s.own[0]}
 function hasAdr(s){return !!(s.own||[]).find(o=>o.adr)}
 function pass(s){
   if(!F.types.includes(s.t))return false;
+  if(F.cib&&s.Q){if(F.cib==='ok'&&!s.Q.ok)return false;if(F.cib==='watch'&&s.Q.ok)return false}
+  if(F.cib==='watch'&&!s.Q)return false;
   if(!F.vente.includes(s.v))return false;
   if(F.d4<30&&!(s.d4!=null&&s.d4<=F.d4))return false;
   if(F.hamin&&!(s.ha!=null&&s.ha>=F.hamin))return false;
@@ -1193,6 +1298,13 @@ function pass(s){
     if(f==='zu'&&!(s.zone&&/^(U|AU)/.test(s.zone.t||'')))return false;
     if(f==='seul'&&s.nown!==1)return false;
     if(f==='art'&&s.t==='cad'&&s.sub!=='art')return false;
+    if(f==='vend'&&!(s.Q&&s.Q.sell.length))return false;
+    if(f==='age'&&!(s.Q&&s.Q.old))return false;
+    if(f==='zae'&&!(s.Q&&s.Q.eco))return false;
+    if(f==='tenant'&&!(s.Q&&s.Q.ten))return false;
+    if(f==='rtez'&&!s.rtez)return false;
+    if(f==='nuc20'&&!(s.t==='nuc'||(s.dn!=null&&s.dn<=20)))return false;
+    if(f==='pl'&&!(s.G&&s.G.rd!=null&&s.G.rd>=0&&s.G.rd<=1000))return false;
   }
   if(F.q){const hay=s._h||(s._h=norm([s.n,s.ci,s.dep,s.reg,s.insee,s.p4,s.p2,s.op,s.id,...(s.own||[]).map(o=>o.den+' '+(o.siren||'')+' '+(o.dir||[]).join(' '))].join(' ')));if(!norm(F.q).split(/\s+/).every(w=>hay.includes(w)))return false}
   return true;
@@ -1201,9 +1313,9 @@ function sorted(a){const k=F.sort;const last=s=>(s.sig&&s.sig[0]&&s.sig[0].d)||'
   return a.sort((x,y)=>k==='d4'?(x.d4??999)-(y.d4??999):k==='ha'?(y.ha||0)-(x.ha||0):k==='rec'?last(y).localeCompare(last(x))||y.pr-x.pr:y.pr-x.pr||(x.d4??999)-(y.d4??999))}
 function chips(el,items,sel,onchg){el.innerHTML=items.map(([k,l,c,n])=>`<button type="button" class="chip" data-k="${k}" aria-pressed="${sel.includes(k)}" ${c?`style="--c:var(${c})"`:''}>${c?'<i></i>':''}${esc(l)}${n!=null?`<span class="n">${n}</span>`:''}</button>`).join('');
   el.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;F.preset='';document.querySelectorAll('#presets .chip').forEach(x=>x.setAttribute('aria-pressed',false));const k=b.dataset.k;const i=sel.indexOf(k);i<0?sel.push(k):sel.splice(i,1);b.setAttribute('aria-pressed',i<0);onchg()}}
-const ALLT=['cad','friche','usine','centrale','public','annonce'];
-const PRESETS=[['coeur','Cœur de cible',{types:['cad'],flags:['prive','zu','art'],d4:5,hamin:12,hamax:'60'}],['pres','Tout à moins de 5 km du 400 kV',{types:ALLT,d4:5}],['vente','À vendre ou peut-être',{types:['friche','usine','centrale','public','annonce'],vente:['o','p']}],['sig','Signaux récents',{types:ALLT,flags:['rec']}],['tel','Avec numéro direct',{types:ALLT,flags:['tel']}],['tout','Tout afficher',{types:ALLT}]];
-function applyPreset(k){const p=PRESETS.find(x=>x[0]===k);if(!p)return;Object.assign(F,{q:'',types:ALLT.slice(),vente:['o','p','n'],flags:[],d4:30,hamin:0,hamax:'',reg:'',st:'',sort:'pr'},JSON.parse(JSON.stringify(p[2])));F.preset=k;shown=120;LS.set('radar-fo',false);initFilters();update();document.querySelector('.side').scrollTop=0;toast('Recherche : '+p[1])}
+const ALLT=['cad','friche','usine','centrale','public','annonce','nuc'];
+const PRESETS=[['coeur','Cœur de cible',{types:['cad'],flags:['prive','zu','art'],d4:5,hamin:12,hamax:'60'}],['vendeurs','Vendeurs probables',{types:['cad','friche','usine','centrale','public','annonce'],flags:['vend'],d4:10}],['friches5','Friches à moins de 5 km',{types:['friche','usine'],d4:5}],['nucl','Autour des centrales nucléaires',{types:['cad','friche','usine','public','annonce','nuc'],flags:['nuc20'],d4:30}],['pres','Tout à moins de 5 km du 400 kV',{types:ALLT,d4:5}],['vente','À vendre ou peut-être',{types:['friche','usine','centrale','public','annonce'],vente:['o','p']}],['sig','Signaux récents',{types:ALLT,flags:['rec']}],['tel','Avec numéro direct',{types:ALLT,flags:['tel']}],['tout','Tout afficher',{types:ALLT}]];
+function applyPreset(k){const p=PRESETS.find(x=>x[0]===k);if(!p)return;Object.assign(F,{q:'',types:ALLT.slice(),vente:['o','p','n'],flags:[],d4:30,hamin:0,hamax:'',reg:'',st:'',sort:'pr',cib:'ok'},JSON.parse(JSON.stringify(p[2])));F.preset=k;shown=120;LS.set('radar-fo',false);initFilters();update();document.querySelector('.side').scrollTop=0;toast('Recherche : '+p[1])}
 function initFilters(){
   $('presets').innerHTML=PRESETS.map(([k,l])=>`<button type="button" class="chip" data-p="${k}" aria-pressed="${F.preset===k}">${l}</button>`).join('');
   $('presets').onclick=e=>{const b=e.target.closest('[data-p]');if(b)applyPreset(b.dataset.p)};
@@ -1212,13 +1324,19 @@ function initFilters(){
   const vc={};SITES.forEach(s=>vc[s.v]=(vc[s.v]||0)+1);
   chips($('f-vente'),Object.entries(VENTE).map(([k,l])=>[k,l,null,vc[k]||0]),F.vente,()=>{shown=120;update()});
   chips($('f-flags'),FLAGS.map(([k,l])=>[k,l]),F.flags,()=>{shown=120;update()});
+  const one=(el,items,get,set)=>{el.innerHTML=items.map(([k,l,n])=>`<button type="button" class="chip" data-k="${k}" aria-pressed="${String(get())===String(k)}">${esc(l)}${n!=null?`<span class="n">${n}</span>`:''}</button>`).join('');
+    el.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;set(b.dataset.k);el.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));F.preset='';document.querySelectorAll('#presets .chip').forEach(x=>x.setAttribute('aria-pressed',false));shown=120;update()}};
+  const qn=SITES.filter(s=>s.Q),nok=qn.filter(s=>s.Q.ok).length;
+  one($('f-cib'),[['ok','Appelables',nok],['watch','À surveiller',qn.length-nok],['','Tout']],()=>F.cib,k=>F.cib=k);
+  F.syncD4=()=>{$('d4').value=F.d4;$('d4v').textContent=F.d4>=30?'sans limite':F.d4+' km';$('f-d4').querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.k===+F.d4))};
+  one($('f-d4'),[[2,'2 km'],[5,'5 km'],[10,'10 km'],[20,'20 km'],[30,'Sans limite']],()=>F.d4,k=>{F.d4=+k;F.syncD4()});
   const regs=[...new Set(SITES.map(s=>s.reg).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr'));
   $('f-reg').innerHTML='<option value="">Toutes les régions</option>'+regs.map(r=>`<option ${F.reg===r?'selected':''}>${esc(r)}</option>`).join('');
   $('f-st').innerHTML='<option value="">Tous les statuts</option><option value="none">Pas encore traité</option>'+STATUS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('');
   $('f-st').value=F.st;$('sort').value=F.sort;$('q').value=F.q;$('d4').value=F.d4;$('hamin').value=F.hamin||0;$('hamax').value=F.hamax||'';
   const d4v=()=>$('d4v').textContent=F.d4>=30?'sans limite':F.d4+' km';d4v();
   $('q').oninput=e=>{F.q=e.target.value;shown=120;update()};
-  $('d4').oninput=e=>{F.d4=+e.target.value;d4v();shown=120;update()};
+  $('d4').oninput=e=>{F.d4=+e.target.value;d4v();F.syncD4();shown=120;update()};
   $('hamin').oninput=e=>{F.hamin=+e.target.value||0;update()};$('hamax').oninput=e=>{F.hamax=e.target.value;update()};
   $('f-reg').onchange=e=>{F.reg=e.target.value;update()};$('f-st').onchange=e=>{F.st=e.target.value;update()};$('sort').onchange=e=>{F.sort=e.target.value;update()};
   $('reset').onclick=()=>{try{localStorage.removeItem('radar-f')}catch(e){};location.reload()};
@@ -1233,15 +1351,15 @@ function cardHTML(s){
   return `<button type="button" class="card" data-id="${s.id}" ${current===s.id?'aria-current="true"':''}>
   <span class="pr ${s.pr>=60?'hi':''}" style="--s:${s.pr}" title="Priorité d’appel sur 100"><b>${s.pr}</b></span>
   <span class="t">${esc(s.n)}</span><span class="d">${s.d4!=null?km(s.d4):''}</span>
-  <span class="m"><span class="tag" style="--c:var(${tc})">${TSHORT[s.t]}</span>${s.rec?'<span class="tag rec">Récent</span>':''}${hasTel(s)?'<span class="tag tgt">Tél.</span>':''}${st?`<span class="tag fill" style="--c:var(--fg)">${STL[st]}${SUIVI[s.id].updated_by?' · '+esc(initials(SUIVI[s.id].updated_by)):''}</span>`:''}${SUIVI[s.id]&&SUIVI[s.id].assigne?`<span class="tag" title="Responsable">→ ${esc(who(SUIVI[s.id].assigne))}</span>`:''}${(ACTBY[s.id]||[]).length?`<span class="tag" title="Actions au journal">${ACTBY[s.id].length} note${ACTBY[s.id].length>1?'s':''}</span>`:''}${esc(meta)}</span>
-  <span class="o">${o?'Propriétaire : <b>'+esc(o.den)+'</b>'+(s.nown>1?' + '+(s.nown-1):''):'Propriétaire : à demander en mairie'}</span></button>`;
+  <span class="m"><span class="tag" style="--c:var(${tc})">${TSHORT[s.t]}</span>${s.rec?'<span class="tag rec">Récent</span>':''}${hasTel(s)?'<span class="tag tgt">Tél.</span>':''}${s.Q&&!s.Q.ok?`<span class="tag watch" title="${esc(s.Q.why)}">À surveiller</span>`:''}${s.Q&&s.Q.sell.length?`<span class="tag sell" title="${esc(s.Q.sell.join(' · '))}">Vendeur probable</span>`:''}${st?`<span class="tag fill" style="--c:var(--fg)">${STL[st]}${SUIVI[s.id].updated_by?' · '+esc(initials(SUIVI[s.id].updated_by)):''}</span>`:''}${SUIVI[s.id]&&SUIVI[s.id].assigne?`<span class="tag" title="Responsable">→ ${esc(who(SUIVI[s.id].assigne))}</span>`:''}${(ACTBY[s.id]||[]).length?`<span class="tag" title="Actions au journal">${ACTBY[s.id].length} note${ACTBY[s.id].length>1?'s':''}</span>`:''}${esc(meta)}</span>
+  <span class="o">${s.t==='nuc'?'EDF · '+fr(s.mw,0)+' MW · '+s.u+' réacteur'+(s.u>1?'s':''):o?'Propriétaire : <b>'+esc(o.den)+'</b>'+(s.nown>1?' + '+(s.nown-1):''):'Propriétaire : à demander en mairie'}</span></button>`;
 }
 function update(){
   saveF();
   VIS=sorted(SITES.filter(pass));
   $('count').textContent=VIS.length.toLocaleString('fr-FR')+' site'+(VIS.length>1?'s':'')+' sur '+SITES.length.toLocaleString('fr-FR');
   $('count2').textContent=dbState==='ok'?'Suivi partagé en direct':dbState==='loading'?'':'Suivi hors ligne';
-  $('cards').innerHTML=VIS.length?VIS.slice(0,shown).map(cardHTML).join('')+(VIS.length>shown?`<button type="button" class="more-btn" id="morebtn">Afficher ${Math.min(120,VIS.length-shown)} sites de plus</button>`:''):'<p class="empty">Aucun site ne passe ces filtres. Élargissez la distance au 400 kV ou réactivez un type de site.</p>';
+  $('cards').innerHTML=VIS.length?VIS.slice(0,shown).map(cardHTML).join('')+(VIS.length>shown?`<button type="button" class="more-btn" id="morebtn">Afficher ${Math.min(120,VIS.length-shown)} sites de plus</button>`:''):'<p class="empty">Aucun site ne passe ces filtres. Élargissez la distance au 400 kV, passez le ciblage sur « Tout » ou réactivez un type de site.</p>';
   $('k-sites').textContent=VIS.length.toLocaleString('fr-FR');
   $('k-tel').textContent=VIS.filter(s=>hasTel(s)||s.call2).length.toLocaleString('fr-FR');
   $('k-adr').textContent=VIS.filter(hasAdr).length.toLocaleString('fr-FR');
@@ -1302,7 +1420,7 @@ function searchLinks(name,ci){const q=encodeURIComponent(name),qc=encodeURICompo
   return `<a class="btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${qc}">Chercher le numéro</a><a class="btn" target="_blank" rel="noopener" href="https://www.pagesjaunes.fr/annuaire/chercherlespros?quoiqui=${q}&ou=${encodeURIComponent(ci||'')}">Pages Jaunes</a><a class="btn" target="_blank" rel="noopener" href="https://www.linkedin.com/search/results/all/?keywords=${q}">LinkedIn</a>`}
 function callBox(c,s,first){if(!c||(!c.who&&!c.tel))return'';
   return `<div class="callbox"><div class="who">${esc(c.who||'Contact')}</div>${c.role?`<div class="role">${esc(c.role)}</div>`:''}
-  <div class="telrow">${c.tel?`<span class="tel">${esc(c.tel)}</span><button type="button" class="btn" data-copy="${esc(c.tel)}">Copier</button>`:`<span class="tel none">Numéro non public : à chercher, ou passer par la mairie</span>`}</div>
+  <div class="telrow">${c.tel?`<a class="tel" href="tel:${telH(c.tel)}">${esc(c.tel)}</a><button type="button" class="btn" data-copy="${esc(c.tel)}">Copier</button>`:`<span class="tel none">Numéro non public : à chercher, ou passer par la mairie</span>`}</div>
   ${c.mail?`<div class="srcline">E-mail : <span style="user-select:all">${esc(c.mail)}</span></div>`:''}
   ${c.tel&&c.src?`<div class="srcline">Source du numéro : ${/^https?:/.test(c.src)?`<a href="${esc(c.src)}" target="_blank" rel="noopener">${esc(c.src.replace(/^https?:\/\/(www\.)?/,'').slice(0,60))}</a>`:esc(c.src)}</div>`:''}
   ${!c.tel&&c.who?`<div class="telrow">${searchLinks(c.who,s.ci)}</div>`:''}</div>`}
@@ -1314,9 +1432,11 @@ function ownerHTML(o,i,s){
   ${o.dir&&o.dir.length?`<div class="x2">Dirigeants : ${esc(o.dir.join(', '))}</div>`:''}
   ${o.tel?`<div class="x2">Tél. <span class="mono" style="color:var(--fg);user-select:all">${esc(o.tel)}</span>${o.mail?' · '+esc(o.mail):''}</div>`:''}
   ${o.bod?`<div class="x2">BODACC du ${frdate(o.bod.d)} : ${esc(o.bod.nat)}. ${esc((o.bod.txt||'').slice(0,220))}</div>`:''}
+  ${entHTML(o,s)}
   <div class="acts">${o.siren?`<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/${esc(o.siren)}" target="_blank" rel="noopener">Fiche officielle</a><a href="https://www.pappers.fr/entreprise/${esc(o.siren)}" target="_blank" rel="noopener">Pappers</a>`:`<a href="https://annuaire-entreprises.data.gouv.fr/rechercher?terme=${encodeURIComponent(o.den)}" target="_blank" rel="noopener">Trouver la société</a>`}
   ${o.adr?`<button type="button" class="linkbtn" data-letter="${i}">Rédiger le courrier</button>`:''}</div></div>`}
 function ficheHTML(s){
+  if(s.t==='nuc')return nucFiche(s);
   const [tl,tc]=TYPE[s.t];
   const fi=FI[s.fi||'d'];
   const facts=[];
@@ -1335,6 +1455,7 @@ function ficheHTML(s){
   <div><span class="tag fill" style="--c:var(${tc})">${tl}</span><span class="tag" style="--c:var(--fg)">${VENTE[s.v]}</span>${s.rec?'<span class="tag rec">Signal récent</span>':''}<span class="tag">Priorité ${s.pr}/100</span></div>
   <div class="navrow"><button type="button" class="btn" data-nav="-1">← Précédent</button><button type="button" class="btn" data-nav="1">Suivant →</button><span class="srcline" style="align-self:center">${(()=>{const i=VIS.findIndex(x=>x.id===s.id);return i>=0?(i+1)+' sur '+VIS.length.toLocaleString('fr-FR'):''})()}</span></div></header>
   <div class="fbody">
+  ${qHTML(s)}
   <div class="sec"><h3>Qui appeler</h3>${callBox(s.call,s,true)||'<div class="callbox"><div class="who">Propriétaire non identifié</div><div class="role">Aucune société dans le fichier public : la mairie saura qui détient le terrain.</div></div>'}${callBox(s.call2,s)}
     ${s.mai&&!(s.call2&&s.call2.who===s.mai.nom)&&!(s.call&&s.call.tel===s.mai.tel)?callBox({who:s.mai.nom,role:'Mairie de la commune du terrain'+(s.mai.ad?' · '+s.mai.ad:''),tel:s.mai.tel,mail:s.mai.mail,src:'Annuaire de l’administration (service-public.fr)'},s):''}
     ${s.mnote&&!s.mai?`<div class="srcline" style="margin-top:6px">Collectivité liée : ${esc(s.mnote)}</div>`:''}
@@ -1349,7 +1470,12 @@ function ficheHTML(s){
   <div class="sec"><h3>Électricité</h3><dl class="kv">
     ${s.d4!=null?`<dt>Poste 400 kV</dt><dd>${esc(s.p4)} à <b>${km(s.d4)}</b></dd>`:''}
     ${s.d2!=null?`<dt>Poste le plus proche</dt><dd>${esc(s.p2)} (${s.k2} kV) à <b>${km(s.d2)}</b></dd>`:''}
-    <dt>Score réseau</dt><dd>${s.ps??0}/100</dd></dl>
+    <dt>Score réseau</dt><dd>${s.ps??0}/100</dd>
+    ${s.rtez?`<dt>Zone RTE</dt><dd>${esc(s.rtez)}</dd>`:''}
+    ${s.cst?`<dt>Ligne en contrainte</dt><dd>${esc(s.cst[1])} · ${['','très rare','rare','moyenne','fréquente','très fréquente'][s.cst[0]]} <div class="srcline">ODRÉ « contraintes-region » : congestions vues côté production. Ce n’est pas la capacité de soutirage, que RTE ne publie pas.</div></dd>`:''}
+    ${s.dn!=null&&s.dn<=40?`<dt>Centrale nucléaire</dt><dd>${esc(s.nn)} à <b>${km(s.dn)}</b></dd>`:''}
+    ${s.G&&s.G.rd!=null&&s.G.rd>=0?`<dt>Route principale</dt><dd>à ${km(s.G.rd/1000)} du périmètre (accès poids lourds probable)</dd>`:''}
+    ${s.ddc!=null?`<dt>Data center le plus proche</dt><dd>${km(s.ddc)} <span class="srcline">indice de fibre longue distance</span></dd>`:''}</dl>
     ${(s.pw||[]).length?`<ul class="ask">${s.pw.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
     <div class="srcline" style="margin-top:8px">Distances à vol d’oiseau. La proximité d’un poste ne dit pas la puissance disponible : seule une étude RTE la confirme.</div></div>
   <div class="sec"><h3>Propriétaires${s.nown>1?' ('+s.nown+')':''}</h3>${(s.own||[]).length?s.own.map((o,i)=>ownerHTML(o,i,s)).join(''):'<div class="srcline">Aucune personne morale dans le fichier DGFiP sur ce périmètre.</div>'}</div>
@@ -1361,7 +1487,7 @@ function scriptHTML(s){const o=mainOwner(s);const parc=(s.parc||'').split(', ').
   const b=`Bonjour, je souhaite joindre le service urbanisme ou développement économique. Je m’intéresse au terrain ${terr}${o?', propriété de '+o.den:''}, pour un projet industriel créateur d’activité. Savez-vous si ce terrain est occupé, s’il y a déjà un projet dessus, et qui contacter chez le propriétaire ?`;
   const blk=(t,x)=>x?`<div class="script"><b>${t}</b>${esc(x)}<div style="margin-top:6px"><button type="button" class="btn" data-copy="${esc(x)}">Copier</button></div></div>`:'';
   return `<div class="srcline">Modèles à adapter. Ne citez pas le nom de l’investisseur au premier appel.</div>${blk('Au propriétaire',a)}${blk('À la mairie',b)}`}
-function openSite(id,fly){const s=byId[id];if(!s)return;current=id;const f=$('fiche');const fb0=f.querySelector('.fbody');const keep=f.hidden||f.dataset.sid!==id||!fb0?0:fb0.scrollTop;f.innerHTML=ficheHTML(s);f.dataset.sid=id;f.hidden=false;bindSuivi(id);const fb1=f.querySelector('.fbody');if(fb1)fb1.scrollTop=keep;
+function openSite(id,fly){const s=byId[id];if(!s)return;current=id;const f=$('fiche');const fb0=f.querySelector('.fbody');const keep=f.hidden||f.dataset.sid!==id||!fb0?0:fb0.scrollTop;f.innerHTML=ficheHTML(s)+mobBar(s);f.dataset.sid=id;f.hidden=false;bindSuivi(id);const fb1=f.querySelector('.fbody');if(fb1)fb1.scrollTop=keep;
   document.querySelectorAll('.card[aria-current]').forEach(c=>c.removeAttribute('aria-current'));const c=document.querySelector(`.card[data-id="${id}"]`);if(c)c.setAttribute('aria-current','true');
   highlight(s);if(fly&&s.la!=null){const z=Math.max(map.getZoom(),11);const mp=$('map').getBoundingClientRect(),fp=document.querySelector('.fiche,#fiche');let off=0;if(fp){const fr_=fp.getBoundingClientRect();const ov=Math.max(0,Math.min(mp.right,fr_.right)-Math.max(mp.left,fr_.left));if(ov>0&&ov<mp.width-80)off=ov/2}map.flyTo(map.unproject(map.project([s.la,s.lo],z).add([off,0]),z),z,{duration:.6})}}
 $('fiche').addEventListener('click',e=>{const t=e.target;
@@ -1371,7 +1497,107 @@ $('fiche').addEventListener('click',e=>{const t=e.target;
   if(t.dataset.st){const s=byId[current];const nv=stOf(s.id)===t.dataset.st?'':t.dataset.st;setSuivi(s.id,{statut:nv},{type:'statut',extra:{statut:nv||null}});return}
   if(t.dataset.call){const CS={'Pas de réponse':'rappeler','Message laissé':'rappeler','Mauvais numéro':'','Pas vendeur':'ecarte','Intéressé, à relancer':'discussion','Demande un courrier':'appele'};const x=t.dataset.call;const note=($('jtxt')&&$('jtxt').value.trim())||'';if($('jtxt'))$('jtxt').value='';const nv=CS[x]||stOf(current)||'appele';setSuivi(current,{statut:nv},{type:'appel',extra:{texte:x+(note?' · '+note:''),statut:nv}});return}
   if(t.dataset.del){delAct(t.dataset.del);return}
+  if(t.dataset.nuc){const k=t.dataset.nuc;setView('nucleaire');setTimeout(()=>{if(typeof selNuc==='function'&&NBY&&NBY[k])selNuc(k);else{try{localStorage.setItem('atlas-nuc',k)}catch(e){}}},400);return}
   if(t.dataset.letter!=null){openLetter(byId[current],+t.dataset.letter);return}});
+
+
+/* ---------- ciblage v2 (23/11/2026) ---------- */
+const CMAP={"FRONCLES":[3,"Liaison 225kV Muremont - Saintois - Vincey"],"BALARUC":[1,"Liaison 63kV Loupian-Pezenas"],"DISTRE":[5,"Liaison 90kV Distre-Loudun"],"AOSTE":[1,"Liaison 225kV Aoste-Bissy"],"BRENS":[1,"Liaison 225kV Aoste-Bissy"],"SEUIL":[3,"Liaison 63kV Bazancourt - Rethel- Nepellier"],"GOUVIEUX":[2,"Liaison 225kV Carrieres-Gouvieux"],"CARRIERES":[2,"Liaison 225kV Carrieres-Gouvieux"],"FARRADIERE (LA)":[1,"Liaison 90kV Archingeay - Farradiere (La) - Saintes"],"RIGOTTE (LA)":[2,"Liaison 225kV Pusy - Rigotte (La) - Rolampont"],"ROLAMPONT":[2,"Liaison 225kV Pusy - Rigotte (La) - Rolampont"],"DAMERY":[3,"Damery"],"ROSIERES":[2,"Liaison 63kV Maladiere (La)-Rosieres"],"MORCHIES":[4,"Liaison 225kV Gavrelle - Morchies"],"EGUZON":[3,"Liaison 90kV N0 2 Eguzon - St-Marcel"],"BLOCAUX":[3,"Blocaux"],"SAUCATS":[3,"Liaison 63kV Hostens-Saucats"],"CHAUSSEE (LA)":[3,"Liaison 63kV Compertrix-Oiry"],"CHANCENAY":[3,"Liaison 225kV Creney - Marolles"],"JOUX-LA-VILLE":[5,"Liaison 225kV Joux-La-Ville - Serein - Tonnerre"],"VIGNE (LA)":[5,"Liaison 225kV Joux-La-Ville - Serein - Tonnerre"],"AVALLON":[5,"Liaison 225kV Joux-La-Ville - Serein - Tonnerre"],"TIVERNON":[3,"Tivernon"],"GODIN":[2,"Godin"],"TROIS DOMAINES":[1,"Liaison 225kV Chapon - Trois Domaines"],"CHAPON":[1,"Liaison 225kV Chapon - Trois Domaines"],"VANDIERES":[1,"Liaison 225kV Chapon - Trois Domaines"],"SAULNOIS":[3,"Saulnois"],"CHATILLON-SUR-SEINE":[4,"Liaison 225kV Darcey - Vielmoulin"],"ISSEL":[3,"Issel"],"SEMINAIRE":[2,"Liaison 63kV Bayet-Seminaire"],"VARENNES (-SUR-FOUZON)":[1,"Liaison 90kV Varennes (-Sur-Fouzon)-Vale9 / Blere Vare5 1"],"BUIRE":[2,"Liaison 63kV Buire-Liart"],"SISTERON":[2,"Liaison 225kV Salignac - Sisteron - St-Auban"],"SAINTOIS":[1,"Liaison 225kV Muremont - Saintois - Vincey"],"MUREMONT":[3,"Liaison 225kV Muremont - Saintois - Vincey"],"MORU":[2,"Liaison 225kV Moimont-Moru"],"COMPIEGNE":[2,"Liaison 225kV Moimont-Moru"],"GUPIE":[2,"Liaison 63kV Gupie - Sauvetat (La)"],"TUILIERES":[2,"Liaison 63kV Gupie - Sauvetat (La)"],"ONET-LE-CHATEAU":[1,"Onet-Le-Chateau"],"PRATCLAUX":[1,"Liaison 63kV Puy (Le)-Taulhac"],"MAROLLES":[3,"Liaison 225kV Creney - Marolles"],"REVIGNY":[3,"Liaison 225kV Creney - Marolles"],"PLAUD":[2,"Plaud"],"ROM":[1,"Liaison 90kV Laitier (Le) - Rom"],"VIGNOL":[4,"Liaison 225kV Avallon-Vignol"],"VIELMOULIN":[3,"Vielmoulin"],"PERIZET (LE)":[2,"Perizet (Le)"],"BEAUTOR (POSTE)":[2,"Liaison 63kV Beautor(Poste)-Ham"],"CISSAC":[4,"Liaison 63kV Cissac-Margaux"],"EPIZON - LES HAUTS PAYS":[3,"Liaison 225kV Muremont - Saintois - Vincey"],"DARCEY":[4,"Liaison 225kV Darcey - Vielmoulin"],"BEAULIEU":[3,"Beaulieu"],"SALIGNAC":[2,"Liaison 225kV Salignac - Sisteron - St-Auban"],"BLAUX":[2,"Liaison 225kV Salignac - Sisteron - St-Auban"],"MARMAGNE":[1,"Marmagne"],"ROYE":[4,"Liaison 225kV Pertain-Roye"],"PERTAIN":[4,"Liaison 225kV Pertain-Roye"],"BUS-LA-MESIERE":[4,"Liaison 225kV Pertain-Roye"],"ST-AUBAN":[3,"Liaison 225kV Mees (Les) - Oraison - St-Auban"],"POTEAU (LE)":[3,"Liaison 225kV Chaussee (La)-Revigny"],"RECY":[1,"Liaison 225kV Cuperly - Recy - Vesle"],"GUEUGNON":[1,"Liaison 63kV Gueugnon-Sornat"],"CANTEGRIT":[2,"Liaison 63kV Cantegrit - Mimizan"],"ST-VICTOR":[1,"St-Victor"],"ORAISON":[2,"Liaison 225kV Oraison-Ste-Tulle"],"MEES (LES)":[3,"Liaison 225kV Mees (Les) - Oraison - St-Auban"],"DAMBRON":[1,"Dambron"],"CURBANS":[2,"Liaison 225kV Salignac - Sisteron - St-Auban"],"BARBUISE":[1,"Liaison 63kV Barbuise-Romilly"],"CESTAS":[3,"Liaison 225kV Bruges - Garies - Pessac"],"CONSTANTIN":[2,"Liaison 225kV Cestas - Pessac"],"MONT-VARIN":[2,"Liaison 225kV Mastaing-Perizet (Le)"],"BELLOY-EN-FRANCE":[2,"Liaison 225kV Carrieres - Plessis-Gassot - Belloy-En-France"],"VALESCOURT":[2,"Liaison 63kV Rantigny - Valescourt"],"PREGUILLAC":[1,"Liaison 90kV N0 2 Preguillac-Saintes"],"SERRIERES":[1,"Liaison 63kV Rumilly-Serrieres"],"MONTGUYON":[1,"Montguyon"],"NIORT":[1,"Liaison 90kV N0 2 Niort-St-Florent"],"SETIER":[2,"Liaison 225kV Beautor(Poste)-Setier"],"FLEAC":[1,"Fleac"],"AVESNES-LE-COMTE":[2,"Liaison 225kV Avesnes-Le-Comte - Montcroisette"],"VICOGNE (LA)":[2,"Liaison 225kV Avesnes-Le-Comte - Montcroisette"],"AMIENS":[2,"Liaison 225kV Avesnes-Le-Comte - Montcroisette"],"VALDIVIENNE":[4,"Valdivienne"],"GARIES":[3,"Liaison 225kV Bruges - Garies - Pessac"],"PESSAC":[3,"Liaison 225kV Bruges - Garies - Pessac"],"LARDIT":[1,"Liaison 63kV Godin - Lardit - Cambeyrac"]};
+const RTEZ=[['site fast-track RTE de Fouju',48.585,2.778,10],['site fast-track RTE de Montereau',48.39,2.96,10],['site fast-track RTE d’Escaudain',50.333,3.343,10],['site fast-track RTE du Bosquel',49.748,2.205,10],['site fast-track RTE de Dunkerque (Grand Port)',51.02,2.2,10],
+ ['zone prioritaire RTE de Dunkerque (vers 2028)',51.0,2.3,18],['zone prioritaire RTE du Havre (vers 2029)',49.47,0.2,18],['zone prioritaire RTE de Fos-sur-Mer (vers 2029)',43.45,4.92,18],['zone prioritaire RTE de Valenciennes (vers 2030)',50.36,3.52,18],['zone prioritaire RTE Loire-Estuaire (vers 2030)',47.3,-2.1,22],['zone prioritaire RTE Île-de-France Sud (vers 2030)',48.45,2.6,22],['zone prioritaire RTE Vallée de la chimie (vers 2029)',45.68,4.83,15],['zone prioritaire RTE Sud Alsace (vers 2030)',47.75,7.35,18],['zone prioritaire RTE Plan de Campagne (vers 2029)',43.42,5.37,15],['zone prioritaire RTE Saint-Avold (vers 2030)',49.1,6.7,15]];
+const hav=(a,b,c,d)=>{const p=Math.PI/180,x=Math.sin((c-a)*p/2)**2+Math.cos(a*p)*Math.cos(c*p)*Math.sin((d-b)*p/2)**2;return 12742*Math.asin(Math.sqrt(x))};
+const ALIAS={'Oberholz':'Jean Oberholz'};const DCS=[];
+const GROUPS=/prologis|saint[- ]?gobain|\btotal\b|\bedf\b|electricite de france|engie|arkema|michelin|arcelor|sanofi|air liquide|renault|stellantis|peugeot|psa\b|airbus|safran|amazon|goodman|\bglp\b|segro|carrefour|auchan|leclerc|lidl|intermarch|vinci|bouygues|eiffage|suez|veolia|sncf|orange\b|thales|lafarge|holcim|vicat|solvay|bayer|basf|nestl|danone|lactalis|michelin|alstom|schneider|legrand|lvmh|l.?or[eé]al|seb\b|valeo|faurecia|forvia|plastic omnium|opella|imerys|eramet|ineos|exxon|\besso\b|\bshell\b|bp france|dhl|geodis|fm logistic|stef\b|kuehne|\bxpo\b|gefco|ikea|decathlon|leroy merlin|castorama|but\b|conforama|metro\b|pepsico|\bcoca\b|heineken|kronenbourg|tereos|cristal union|roquette|\bavril\b|vilmorin|limagrain|naval group|dassault|mbda|nexans|constellium|novelis|aperam|vallourec|framatome|orano|cea\b|andra/i;
+const YEAR=new Date().getFullYear();
+const ECO=/activit|économ|econom|industri|artisan|commerc|portuaire|logisti|\bU[EIXYZ]|\bAU[EIXYZ]|\b1AU[EIXYZ]|\bU[A-Z]?[eix]\b/i;
+const NAT={sic:'Natura 2000 (habitats)',zps:'Natura 2000 (oiseaux)',rnn:'réserve naturelle',apb:'arrêté de protection de biotope',bcae:'zone humide ou tourbière'};
+function pluOf(s){if(s.zone)return {t:s.zone.t||'',l:s.zone.l||''};const f=(s.facts||[]).find(x=>/PLU/i.test(x[0]));if(f){const v=String(f[1]);return {t:(v.match(/^\s*(\d?AU|U|A|N)/i)||[])[1]||'',l:v}}return null}
+function ageOf(y){return y?YEAR-y:null}
+function qualify(s){
+  s.pr0=s.pr0??s.pr;
+  if(s.la!=null){let b=null;for(const z of RTEZ){const d=hav(s.la,s.lo,z[1],z[2]);if(d<=z[3]&&(!b||d<b[1]))b=[z[0],d]}s.rtez=b?b[0]+' ('+km(b[1])+')':''}
+  const c4=s.d4!=null&&s.d4<=10?CMAP[s.p4]:null,c2=s.d2!=null&&s.d2<=3?CMAP[s.p2]:null;s.cst=c4&&c2?(c4[0]>=c2[0]?c4:c2):(c4||c2||null);
+  if(['nuc','dc'].includes(s.t)){s.Q=null;return}
+  const G=s.G,c=[],sell=[];let eco=false,ten=false,old=false;
+  // 1. réseau
+  const p225=s.k2>=225&&s.d2!=null&&s.d2<=2,near=(s.d4!=null&&s.d4<=5)||p225;
+  c.push(near?['ok','Réseau',`poste 400 kV à ${km(s.d4)}${p225&&s.p2!==s.p4?', '+s.k2+' kV à '+km(s.d2):''}${s.rtez?' · '+s.rtez:''}`]:(s.d4!=null&&s.d4<=10)?['warn','Réseau',`poste 400 kV à ${km(s.d4)} (entre 5 et 10 km)`]:['no','Réseau',`poste 400 kV à ${km(s.d4)} : trop loin pour 100 MW`]);
+  if(s.cst&&s.cst[0]>=3)c.push(['warn','Ligne voisine en contrainte',`${s.cst[1]} (congestion côté production, à poser à RTE)`]);
+  // 2. protections
+  if(G&&G.pr){const pr=G.pr.filter(x=>NAT[x[0]]);c.push(pr.length?['no','Protection',pr.map(x=>NAT[x[0]]+(x[1]?' « '+x[1]+' »':'')).join(' · ')]:['ok','Protection','hors Natura 2000, réserve, biotope et zone humide recensée'])}else c.push(['na','Protection','non vérifié'])
+  // 3. inondation
+  if(G&&G.tri){const t=G.tri.join(' ');c.push(/forte|moyenne/i.test(t)?['no','Inondation','zone inondable (TRI : '+t+')']:/faible/i.test(t)?['warn','Inondation','zone inondable en crue rare (aléa faible)']:['ok','Inondation','hors zone inondable cartographiée (TRI)'])}else c.push(['na','Inondation','non vérifié'])
+  // 4. habitations
+  if(G&&G.hn!=null)c.push(G.hn>=5?['no','Habitations',`${G.hn} maisons ou immeubles à moins de 300 m du terrain`]:G.hn>0?['warn','Habitations',`${G.hn} habitation${G.hn>1?'s':''} à moins de 300 m`]:['ok','Habitations','aucune habitation à moins de 300 m']);else c.push(['na','Habitations','non vérifié'])
+  // 5. seul tenant
+  if(G&&G.bl!=null&&G.bn){ten=G.bl>=10;c.push(ten?['ok','Seul tenant',`${fr(G.bl)} ha d’un seul tenant`]:G.bn>=G.bq?['no','Seul tenant',`plus grand bloc contigu : ${fr(G.bl)} ha (moins de 10 ha)`]:['warn','Seul tenant',`plus grand bloc trouvé : ${fr(G.bl)} ha, parcelles incomplètes`])}
+  else if(s.t!=='cad'&&s.ha!=null){ten=s.ha>=10;c.push(ten?['ok','Seul tenant',`site d’un seul périmètre, ${fr(s.ha)} ha`]:['no','Seul tenant',`${fr(s.ha)} ha seulement`])}
+  else c.push(['na','Seul tenant','non vérifié'])
+  // 6. PLU
+  const z=pluOf(s);if(z&&z.t){eco=ECO.test(z.l)||ECO.test(z.t);c.push(/^(A|N)$/i.test(z.t)?['no','PLU',`zone ${z.t} (agricole ou naturelle)`]:eco?['ok','PLU',`zone d’activité : ${z.l}`]:['ok','PLU',`constructible, sans vocation économique affichée : ${z.l}`])}else c.push(['na','PLU','zonage inconnu'])
+  // 7. propriétaire
+  const priv=(s.own||[]).slice(0,3).filter(o=>!o.pub);const o=priv[0];
+  if(o&&o.X&&!o.X.nf){const X=o.X,act=(X.e||[]).filter(e=>e[0]==='A'),ferm=(X.e||[]).filter(e=>e[0]==='F');
+    const big=X.cat==='GE'||GROUPS.test(o.den);
+    if(big&&(act.length||(s.sub==='art'&&s.t==='cad'))&&s.v!=='o'&&!['usine','annonce'].includes(s.t))c.push(['no','Grand groupe en activité',act.length?`${o.den} appartient à un grand groupe et a ${act.length} établissement${act.length>1?'s':''} ouvert${act.length>1?'s':''} sur la commune : il ne vendra pas`:`${o.den} appartient à un grand groupe et le terrain est bâti : site probablement en activité`]);
+    else if(X.cat==='ETI'&&act.length&&s.v!=='o')c.push(['warn','Groupe en activité',`${o.den} (entreprise de taille intermédiaire) a un établissement ouvert sur la commune`]);
+    else c.push(['ok','Propriétaire',big?'grand groupe, mais aucun établissement ouvert sur la commune':act.length?'établissement ouvert sur place, société '+(X.cat||'de petite taille'):'pas d’activité déclarée sur la commune']);
+    if(X.et==='C')sell.push('société cessée');
+    if(ferm.length&&!act.length)sell.push('établissement fermé sur la commune');
+    const ages=(X.a||[]).map(a=>ageOf(a[1])).filter(Boolean);const mx=ages.length?Math.max(...ages):0;if(mx>=60){old=true;sell.push('dirigeant de '+mx+' ans')}
+    if(X.f&&X.f[2]!=null&&X.f[2]<0)sell.push('résultat net négatif en '+X.f[0]);
+    if(X.f&&X.f[1]!=null&&X.f[1]<10e6&&!big&&X.nj!=='6540')sell.push('petite société (CA '+eur(X.f[1])+') : rachat possible');}
+  if((s.own||[]).some(o=>o.bod))sell.push('procédure collective au BODACC');
+  if((s.own||[]).some(o=>o.cessee)&&!sell.includes('société cessée'))sell.push('société cessée');
+  if(s.t==='friche'){const y=+(String(s.maj||'').slice(0,4))||0;sell.push('friche recensée'+(y&&YEAR-y>=3?' depuis '+y:''))}
+  if(s.t==='usine')sell.push('usine fermée ou en procédure');
+  if(s.v==='o')sell.push('annoncé à la vente');
+  // 8. data center déjà là
+  let dcx=null;for(const d of DCS){const x=hav(s.la,s.lo,d.la,d.lo);if(x<=1.5||(d.gp==='commune'&&d.insee&&d.insee===s.insee)){if(!dcx||x<dcx[1])dcx=[d.n,x]}}
+  c.push(dcx?['no','Data center',`déjà un data center ou un projet : ${dcx[0]} (${km(dcx[1])})`]:['ok','Data center','aucun data center ni projet connu à moins de 1,5 km']);
+  // 9. intermédiaires et données périmées
+  if(o&&o.X&&/^68\.31/.test(o.X.naf||''))c.push(['no','Intermédiaire',`${o.den} est une agence immobilière : il faut le vrai propriétaire`]);
+  if(s.t==='annonce')c.push(['warn','Intermédiaire','annonce : vérifier qu’on parle au propriétaire et pas à un agent']);
+  if(o&&o.X&&o.X.et==='C'&&!(s.own||[]).some(x=>x.bod))c.push(['warn','Propriétaire à jour','société radiée au registre : le propriétaire a peut-être changé, demander à la mairie']);
+  const must=['Protection','Inondation','Habitations','Seul tenant','PLU'];
+  c.forEach(x=>{if(x[0]==='na'&&must.includes(x[1]))x[0]='nv'});
+  const no=c.filter(x=>x[0]==='no'||x[0]==='nv'),warn=c.filter(x=>x[0]==='warn');
+  s.Q={c,sell,eco,ten,old,ok:!no.length,why:no.map(x=>x[1]+' : '+x[2]).join(' · ')};
+  c.forEach(x=>{if(x[0]==='nv')x[0]='na'});
+  s.pr=Math.max(0,Math.min(100,Math.round(s.pr0+4*Math.min(3,sell.length)+(eco?5:0)+(s.rtez?5:0)-3*warn.length)));
+}
+function eur(v){if(v==null)return '?';const a=Math.abs(v);return (v<0?'−':'')+(a>=1e6?fr(a/1e6,1)+' M€':a>=1e3?fr(a/1e3,0)+' k€':fr(a,0)+' €')}
+function qHTML(s){if(!s.Q)return'';const Q=s.Q;
+  return `<div class="sec"><h3>Ciblage</h3><div class="qv">${Q.ok?'<b class="ok">Appelable</b>':'<b class="no">À surveiller</b>'}<span class="srcline">${Q.ok?'Tous les critères bloquants sont passés.':'Au moins un critère bloquant ou non vérifié : on n’appelle pas pour l’instant.'}${D.enrich?' Vérifié le '+frdate(D.enrich)+'.':''}</span></div>
+  <ul class="qlist">${Q.c.map(([st,t,d])=>`<li class="${st}"><i>${{ok:'✓',no:'✕',warn:'!',na:'?'}[st]}</i><span><b>${esc(t)}</b><small>${esc(d)}</small></span></li>`).join('')}</ul>
+  ${Q.sell.length?`<div class="srcline" style="margin-top:8px"><b style="color:var(--green)">Signaux vendeur :</b> ${esc(Q.sell.join(' · '))}</div>`:''}</div>`}
+function entHTML(o,s){const X=o.X;if(!X||X.nf)return'';
+  const dirs=(X.a||[]).slice(0,5).map(a=>{const g=ageOf(a[1]);return `<li><span>${esc(a[0].replace(/\b(\p{L})(\p{L}*)/gu,(m,x,y)=>x+y.toLowerCase()))}</span>${a[2]?`<span class="srcline">${esc(a[2])}</span>`:''}${g?`<span class="age ${g>=60?'old':''}">${g} ans</span>`:''}</li>`}).join('');
+  const act=(X.e||[]).filter(e=>e[0]==='A').length,ferm=(X.e||[]).filter(e=>e[0]==='F').length;
+  const fin=X.f?`<div class="fin"><span>Exercice</span><span>${X.f[0]}</span><span>Chiffre d’affaires</span><span>${eur(X.f[1])}</span><span>Résultat net</span><span style="${X.f[2]<0?'color:var(--red)':''}">${eur(X.f[2])}</span></div>`:'<div class="x2">Comptes non publiés.</div>';
+  return `<div class="x2">${[X.cat?{GE:'Grand groupe',ETI:'Entreprise de taille intermédiaire',PME:'PME'}[X.cat]||X.cat:'',X.cr?'créée en '+X.cr.slice(0,4):'',X.et==='C'?'cessée':'',X.no?X.no+' établissement'+(X.no>1?'s':'')+' ouvert'+(X.no>1?'s':''):''].filter(Boolean).join(' · ')}</div>
+  <div class="x2">Sur la commune du terrain : ${act?`<b>${act} établissement${act>1?'s':''} en activité</b>`:'aucun établissement en activité'}${ferm?`, ${ferm} fermé${ferm>1?'s':''}`:''}</div>
+  ${fin}${dirs?`<ul class="dirs">${dirs}</ul>`:''}`}
+function nucFiche(s){
+  return `<header><div class="row"><h2>${esc(s.n)}</h2><button type="button" class="x" id="fx" aria-label="Fermer la fiche">×</button></div>
+  <div class="where">${esc(s.ci||'')}</div><div><span class="tag fill" style="--c:var(--nuc)">Centrale nucléaire</span></div></header>
+  <div class="fbody"><div class="sec"><h3>La centrale</h3><dl class="kv"><dt>Puissance</dt><dd>${fr(s.mw,0)} MW, ${s.u} réacteur${s.u>1?'s':''}${s.do?' · arrêtée en '+s.do:''}</dd>
+  ${s.d4!=null?`<dt>Poste 400 kV</dt><dd>${esc(s.p4)} à <b>${km(s.d4)}</b></dd>`:''}
+  <dt>Terrain libre et constructible</dt><dd>${fr(s.fok,0)} ha à moins de 20 km</dd><dt>Friches et terrains repérés</dt><dd>${s.nfr}</dd>
+  <dt>Sites Drakkar à moins de 20 km</dt><dd>${SITES.filter(x=>x.t!=='nuc'&&x.dn!=null&&x.dn<=20&&x.nn===s.n).length}</dd></dl>
+  <div class="tools" style="margin-top:10px"><button type="button" class="btn pri" data-nuc="${esc(s.key)}">Voir l’analyse autour de la centrale</button></div>
+  <div class="srcline" style="margin-top:8px">Pour lister les terrains autour : filtre « À moins de 20 km d’une centrale nucléaire », ou la recherche prête « Autour des centrales nucléaires ».</div></div></div>`}
+async function loadNuc(){try{const N=await (await fetch('nucleaire.json',{cache:'no-cache'})).json();
+  return N.map(r=>{const p4=(r.postes||[]).find(p=>p.kv==400)||r.postes[0]||{};return {id:'N_'+r.key,key:r.key,t:'nuc',n:'Centrale nucléaire de '+r.n,ci:r.n,la:r.la,lo:r.lo,mw:r.mw,u:r.u,do:r.do,v:'n',p4:p4.n,d4:p4.d,k2:p4.kv,d2:p4.d,p2:p4.n,pr:0,own:[],nown:0,fok:r.free_ok_ha,nfr:(r.friches||[]).length,reg:'',dep:'',ha:null}})}catch(e){return []}}
+async function loadEnrich(key){try{const r=await fetch('enrich.enc',{cache:'no-cache'});if(!r.ok)return null;const buf=new Uint8Array(await r.arrayBuffer());
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},key,buf.slice(12));
+  return JSON.parse(await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'))).text())}catch(e){console.warn('enrich',e);return null}}
+function applyEnrich(EN,NUCS){
+  if(EN){SITES.forEach(s=>{if(EN.geo&&EN.geo[s.id])s.G=EN.geo[s.id];(s.own||[]).slice(0,3).forEach(o=>{if(o.siren&&s.insee&&EN.ent&&EN.ent[o.siren+'|'+s.insee])o.X=EN.ent[o.siren+'|'+s.insee]})})}
+  const dcs=SITES.filter(s=>s.t==='dc'&&s.la!=null);DCS.push(...dcs);
+  SITES.forEach(s=>{if(s.la==null||s.t==='nuc')return;let b=null;for(const n of NUCS){const d=hav(s.la,s.lo,n.la,n.lo);if(!b||d<b[0])b=[d,n.n]}if(b){s.dn=b[0];s.nn=b[1]}
+    if(s.t!=='dc'){let m=1e9;for(const d of dcs){const x=hav(s.la,s.lo,d.la,d.lo);if(x<m)m=x}if(m<1e9)s.ddc=m}});
+  SITES.forEach(qualify);}
 
 /* ---------- Drakkar : comptes, suivi partagé, journal ---------- */
 const SB_URL='https://kaeplelubcnyemejnuwo.supabase.co';
@@ -1379,7 +1605,7 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 let ME=null,PROFILES={},ACT=[],ACTBY={};
 const STC={liste:'À appeler',appele:'Appelé',rappeler:'À rappeler',courrier:'Courrier envoyé',discussion:'En discussion',ecarte:'Écarté'};
-function who(uid){const p=PROFILES[uid];return p?(p.nom||p.email||'?'):'?'}
+function who(uid){const p=PROFILES[uid];return p?(ALIAS[p.nom]||p.nom||p.email||'?'):'?'}
 function initials(uid){const n=who(uid).trim().split(/\s+/);return ((n[0]||'?')[0]+(n[1]?n[1][0]:'')).toUpperCase()}
 function ago(ts){if(!ts)return '';const d=(Date.now()-new Date(ts).getTime())/1000;if(d<60)return 'à l’instant';if(d<3600)return 'il y a '+Math.round(d/60)+' min';if(d<86400)return 'il y a '+Math.round(d/3600)+' h';if(d<86400*7)return 'il y a '+Math.round(d/86400)+' j';return 'le '+new Date(ts).toLocaleDateString('fr-FR')}
 function today(){return new Date().toISOString().slice(0,10)}
@@ -1413,7 +1639,7 @@ async function initDb(){
 let rT=0;function refresh(){clearTimeout(rT);rT=setTimeout(()=>{update();renderViews();if(current&&!['note','jtxt'].includes(document.activeElement?.id)&&$('modal').hidden)openSite(current,false)},150)}
 
 function suiviHTML(s){const sv=SUIVI[s.id]||{},st=sv.statut||'';const J=ACTBY[s.id]||[];
-  const opts=Object.values(PROFILES).sort((a,b)=>(a.nom||'').localeCompare(b.nom||'')).map(p=>`<option value="${p.id}" ${sv.assigne===p.id?'selected':''}>${esc(p.nom||p.email)}</option>`).join('');
+  const opts=Object.values(PROFILES).sort((a,b)=>(a.nom||'').localeCompare(b.nom||'')).map(p=>`<option value="${p.id}" ${sv.assigne===p.id?'selected':''}>${esc(ALIAS[p.nom]||p.nom||p.email)}</option>`).join('');
   return `<div class="sec" id="suivi-sec"><h3>Suivi de prospection</h3>
   ${sv.updated_by?`<div class="srcline" style="margin-bottom:8px">Dernière action : <b>${esc(who(sv.updated_by))}</b>, ${ago(sv.updated_at)}</div>`:'<div class="srcline" style="margin-bottom:8px">Personne n’a encore traité ce site.</div>'}
   <div class="strow">${STATUS.map(([k,l])=>`<button type="button" class="btn ${st===k?'on':''}" data-st="${k}">${l}</button>`).join('')}</div>
@@ -1495,7 +1721,7 @@ async function loadData(){
   const buf=new Uint8Array(await (await fetch('data.enc',{cache:'no-cache'})).arrayBuffer());
   const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},key,buf.slice(12));
   const txt=await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
-  return JSON.parse(txt)}
+  const d=JSON.parse(txt);d.__key=key;return d}
 
 /* ---------- courrier ---------- */
 function letterText(s,o,me){const refs=s.parc?` (parcelles ${s.parc.split(', ').slice(0,6).join(', ')})`:'';
@@ -1623,14 +1849,22 @@ async function openNuc(){if(!NUC){$('ndet').innerHTML='<p class="note">Chargemen
 
 /* ---------- vues ---------- */
 function setView(v){['carte','nucleaire','appels','prospection','courriers','equipe','aide','methode'].forEach(k=>$('v-'+k).hidden=k!==v);document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===v));if(v==='carte'&&map)setTimeout(()=>map.invalidateSize(),30);if(v==='nucleaire')openNuc();renderViews();try{history.replaceState(null,'','#'+v)}catch(e){location.hash=v}}
-document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('button');if(b)setView(b.dataset.view)};
+document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;const nv=document.querySelector('nav.tabs');if(b.classList.contains('tmore')){const o=nv.classList.toggle('open');b.setAttribute('aria-expanded',o);return}nv.classList.remove('open');document.querySelector('nav.tabs .tmore').setAttribute('aria-expanded','false');setView(b.dataset.view)};
+document.addEventListener('click',e=>{const nv=document.querySelector('nav.tabs');if(nv&&nv.classList.contains('open')&&!e.target.closest('nav.tabs'))nv.classList.remove('open')});
+
+function telH(t){return String(t||'').replace(/[^\d+]/g,'')}
+function mobBar(s){if(s.t==='nuc')return'';const c=callOf(s),m=s.mai&&s.mai.tel?s.mai:null;
+  const call=c&&c.tel?`<a class="call" href="tel:${telH(c.tel)}">Appeler ${esc((c.who||'').slice(0,26))}</a>`:m?`<a class="call" href="tel:${telH(m.tel)}">Appeler la mairie</a>`:`<a class="call off" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent('"'+((c&&c.who)||s.n)+'" '+(s.ci||'')+' téléphone')}">Chercher le numéro</a>`;
+  return `<div class="fact"><button type="button" data-nav="-1" aria-label="Site précédent">←</button>${call}<button type="button" data-nav="1" aria-label="Site suivant">→</button></div>`}
+function setMM(m){document.body.classList.toggle('mmap',m==='map');document.querySelectorAll('.mswitch button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mm===m));if(m==='map'&&map)setTimeout(()=>map.invalidateSize(),30)}
+document.addEventListener('click',e=>{const b=e.target.closest('.mswitch button');if(b)setMM(b.dataset.mm)});
 function callOf(s){const c=s.call&&s.call.tel?s.call:(s.call2||s.call||{});return c}
 function renderViews(){if(!D)return;
   if(!$('v-appels').hidden){const L1=SITES.filter(s=>stOf(s.id)==='liste');const rows=L1.length?L1:VIS.slice(0,200);
     const txt=rows.map((s,i)=>{const c=callOf(s);return `${i+1}. ${s.n}, ${s.ci} (${s.dep})\n   Appeler : ${c.who||'mairie'}${c.tel?' · '+c.tel:''}\n   Pourquoi : ${s.why}\n   GPS : ${s.la!=null?s.la.toFixed(5)+', '+s.lo.toFixed(5):'non communiqué'}${s.mai?'\n   Mairie : '+s.mai.nom+' · '+s.mai.tel:''}`}).join('\n\n');
     $('appels').innerHTML=`<h2>Liste d’appels</h2><p class="lead">${L1.length?`Les ${L1.length} sites que vous avez mis dans la liste.`:`Voici les ${rows.length} premiers sites de la recherche en cours, par priorité. Pour composer votre propre liste, ouvrez une fiche et cliquez « Dans la liste d’appels ».`}</p>
     <div class="tools"><button type="button" class="btn pri" id="acopy">Copier la liste pour l’envoyer</button><span class="srcline">Texte brut : site, qui appeler, numéro, raison, GPS, mairie.</span></div>
-    <div class="tbl"><table><thead><tr><th>#</th><th>Site</th><th>Qui appeler</th><th>Numéro</th><th>Pourquoi</th><th>Mairie</th></tr></thead><tbody>${rows.map((s,i)=>{const c=callOf(s);return `<tr><td class="mono">${i+1}</td><td><button type="button" class="linkbtn" data-open="${s.id}">${esc(s.n)}</button><div class="srcline">${esc(s.ci)} · ${s.ha!=null?fr(s.ha)+' ha · ':''}${s.d4!=null?'400 kV à '+km(s.d4):''}</div></td><td>${esc(c.who||'')}<div class="srcline">${esc((c.role||'').slice(0,80))}</div></td><td class="telc">${esc(c.tel||'à chercher')}</td><td style="min-width:260px">${esc((s.why||'').slice(0,260))}${(s.why||'').length>260?'…':''}</td><td class="telc">${s.mai?esc(s.mai.tel):''}</td></tr>`}).join('')}</tbody></table></div>`;
+    <div class="tbl"><table><thead><tr><th>#</th><th>Site</th><th>Qui appeler</th><th>Numéro</th><th>Pourquoi</th><th>Mairie</th></tr></thead><tbody>${rows.map((s,i)=>{const c=callOf(s);return `<tr><td class="mono">${i+1}</td><td><button type="button" class="linkbtn" data-open="${s.id}">${esc(s.n)}</button><div class="srcline">${esc(s.ci)} · ${s.ha!=null?fr(s.ha)+' ha · ':''}${s.d4!=null?'400 kV à '+km(s.d4):''}</div></td><td>${esc(c.who||'')}<div class="srcline">${esc((c.role||'').slice(0,80))}</div></td><td class="telc">${c.tel?`<a href="tel:${telH(c.tel)}">${esc(c.tel)}</a>`:'à chercher'}</td><td style="min-width:260px">${esc((s.why||'').slice(0,260))}${(s.why||'').length>260?'…':''}</td><td class="telc">${s.mai&&s.mai.tel?`<a href="tel:${telH(s.mai.tel)}">${esc(s.mai.tel)}</a>`:''}</td></tr>`}).join('')}</tbody></table></div>`;
     $('acopy').onclick=()=>copy(txt,'Liste copiée')}
   if(!$('v-courriers').hidden){const base=SITES.filter(s=>stOf(s.id)==='liste'&&hasAdr(s));const all=(base.length?base:VIS.filter(s=>hasAdr(s)&&mainOwner(s)&&!mainOwner(s).pub));const rows=all.slice(0,150);
     const line=s=>{const o=s.own.find(o=>o.adr);return [o.den,(o.dir&&o.dir[0]||'').replace(/\s*\(.*\)$/,''),o.adr,s.ci,s.ha!=null?fr(s.ha):'',s.parc||'',s.id]};
@@ -1650,6 +1884,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-open]');if
 function methodeHTML(){const M=D.meta||{};const tc={};SITES.forEach(s=>tc[s.t]=(tc[s.t]||0)+1);
   return `<h2>Méthode et sources</h2><p class="lead">Données assemblées le ${frdate(D.gen)}. Chaque fiche cite ses sources et porte une étiquette : vérifié, déduit ou à confirmer.</p>
   <div class="statgrid">${Object.entries(TYPE).filter(([k])=>tc[k]).map(([k,[l]])=>`<div class="stat"><b>${tc[k].toLocaleString('fr-FR')}</b><span>${l}</span></div>`).join('')}</div>
+  <h3>Ciblage du 23/11/2026</h3><ul><li>Dirigeants (année de naissance), comptes publiés et établissements sur la commune : API Recherche d’entreprises (INSEE, RNE, INPI).</li><li>Natura 2000, réserves naturelles, biotopes : couches PatriNat sur la Géoplateforme IGN. Zones humides : couche BCAE tourbières et zones humides.</li><li>Inondation : zonage des territoires à risque important d’inondation (Géorisques).</li><li>Habitations : bâtiments résidentiels de la BD TOPO (IGN), comptés à moins de 300 m d’un cercle de la surface du site : c’est une approximation, à vérifier sur la vue satellite.</li><li>Seul tenant : parcelles cadastrales (Parcellaire Express IGN) du propriétaire, assemblées quand elles se touchent. Seules les six plus grandes parcelles sont connues.</li><li>Réseau : sites fast-track et zones prioritaires RTE (SDDR 2025). Congestions : ODRÉ « contraintes-region », qui décrit la production. La capacité de soutirage d’un poste n’est pas publiée : seule une étude RTE la donne.</li><li>Route : tronçons d’importance 1 à 3 de la BD TOPO. Fibre : pas de carte publique des réseaux longue distance, le data center le plus proche sert d’indice.</li></ul>${D.enrich?`<p class="srcline">Données de ciblage lues le ${frdate(D.enrich)}.</p>`:''}
   ${M.html||''}`}
 
 /* ---------- démarrage ---------- */
@@ -1660,6 +1895,7 @@ async function boot(){
   if(T)SITES.forEach(s=>{s.ask=T.ask[s.t]||[];s.src=(s.src||[]).map(i=>typeof i==='number'?T.src[i]:i);if(!s.mai&&s.insee&&T.mai[s.insee])s.mai=T.mai[s.insee];
     if(s.c2m&&s.mai)s.call2={who:s.mai.nom,role:'service urbanisme ou développement économique : la mairie sait qui détient le terrain et ce qui s’y prépare',tel:s.mai.tel,src:'Annuaire de l’administration (service-public.fr), lu le '+frdate(D.gen)};
     if(typeof s.ver==='number')s.ver=T.ver[s.ver]});
+  const [EN,NUCS]=await Promise.all([loadEnrich(D.__key),loadNuc()]);SITES.push(...NUCS);applyEnrich(EN,NUCS);D.enrich=EN&&EN.gen;
   byId=Object.fromEntries(SITES.map(s=>[s.id,s]));
   $('gen').textContent='Campus IA 100 MW · données du '+frdate(D.gen);
   await initDb();openApp();
@@ -1757,7 +1993,7 @@ const TOUR=[
  {view:'carte',sel:'nav.tabs',title:'Les onglets',html:`<ul><li><b>Carte</b> : chercher et ouvrir les sites. Vous y passerez 90 % du temps.</li><li><b>Liste d’appels</b> : votre liste du jour, à copier.</li><li><b>Prospection</b> : tout ce que l’équipe a fait, les rappels du jour.</li><li><b>Courriers</b> : adresses des sièges pour écrire.</li><li><b>Équipe</b> : qui a fait quoi.</li></ul>`},
  {view:'carte',sel:'#presets',title:'Étape 1 : une recherche prête',html:`<p><span class="click">Cliquez</span><b>Cœur de cible</b> pour commencer : terrains déjà bâtis ou industriels, propriétaire privé, zone constructible, à moins de 5 km d’un poste 400 kV.</p><p>Les autres boutons : <b>À vendre</b>, <b>Signaux récents</b> (société en difficulté, friche nouvelle), <b>Avec numéro</b>, <b>Tout</b>.</p>`},
  {view:'carte',sel:'#q',title:'Étape 2 : chercher un nom',html:`<p>Tapez une <b>commune</b>, un <b>propriétaire</b>, un <b>SIREN</b>, un <b>dirigeant</b> ou le nom d’un <b>poste RTE</b>. La liste et la carte se filtrent à chaque lettre.</p><p>Exemple : « Saint-Avold » ou « Arkema ».</p>`},
- {view:'carte',sel:'#ftoggle',title:'Étape 3 : les filtres fins',html:`<p><span class="click">Cliquez</span><b>Filtres</b> pour ouvrir le panneau :</p><ul><li>distance maximale au poste 400 kV (curseur) ;</li><li>surface minimale et maximale en hectares ;</li><li>région ;</li><li><b>Suivi : « Pas encore traité »</b> pour ne voir que les sites que personne n’a touchés ;</li><li>tri : priorité, distance, taille, signal récent.</li></ul><p>« Réinitialiser » remet tout à zéro.</p>`},
+ {view:'carte',sel:'#ftoggle',title:'Étape 3 : les filtres fins',html:`<p><span class="click">Cliquez</span><b>Filtres</b> pour ouvrir le panneau :</p><ul><li>le ciblage (appelables, à surveiller) et la distance au poste 400 kV sont toujours visibles en haut, et se combinent avec le type de site ;</li><li>« Affiner » ajoute : vendeur probable, dirigeant de 60 ans et plus, zone d’activité, seul tenant, zone RTE prioritaire, près d’une centrale nucléaire ;</li><li>surface minimale et maximale en hectares ;</li><li>région ;</li><li><b>Suivi : « Pas encore traité »</b> pour ne voir que les sites que personne n’a touchés ;</li><li>tri : priorité, distance, taille, signal récent.</li></ul><p>« Réinitialiser » remet tout à zéro.</p>`},
  {view:'carte',sel:'.count',title:'Le compteur',html:`<p>Il dit combien de sites passent vos filtres, sur le total. Juste en dessous, la liste triée : <b>commencez toujours par le haut</b>.</p>`},
  {view:'carte',sel:'#cards .card',title:'Lire une ligne',html:`<ul><li>Le <b>chiffre à gauche</b> est la priorité d’appel sur 100. En noir plein : 60 ou plus, à appeler en premier.</li><li>À droite : la distance au poste 400 kV.</li><li>Les étiquettes : type de site, <b>Tél.</b> si un numéro direct existe, <b>Récent</b> pour un signal daté, et le <b>statut avec les initiales</b> de celui qui l’a traité.</li></ul><p><span class="click">Cliquez</span>une ligne pour ouvrir sa fiche.</p>`},
  {view:'carte',sel:'#map',title:'La carte',html:`<p>Chaque point est un site, coloré par type. <b>Points rouges : postes 400 kV</b>, gris : 225 kV. Plus le point est gros, plus la priorité est haute.</p><p>Molette pour zoomer, cliquez un point pour la fiche. En haut à droite, choisissez le fond : <b>Satellite</b> montre si le terrain est vide.</p>`},
