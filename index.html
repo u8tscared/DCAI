@@ -1274,6 +1274,7 @@ function copy(text,label){const done=()=>toast(label||'Copié');try{navigator.cl
 /* ---------- filtres ---------- */
 const F=Object.assign({q:'',types:['cad','friche','usine','centrale','public','annonce','nuc'],vente:['o','p','n'],flags:[],d4:10,hamin:0,hamax:'',reg:'',st:'',sort:'pr',cib:'ok'},LS.get('radar-f',{}));
 if(!F.v2){if(!F.types.includes('nuc'))F.types.push('nuc');if(F.d4>=30)F.d4=10;F.cib='ok';F.v2=1}
+if(!F.v3){F.types=['cad','friche','usine','centrale','public','annonce','nuc'];F.flags=[];F.vente=['o','p','n'];F.q='';F.reg='';F.st='';F.hamin=0;F.hamax='';F.sort='pr';F.d4=10;F.cib='ok';F.v3=1}
 const FLAGS=[['vend','Vendeur probable'],['age','Dirigeant de 60 ans et plus'],['zae','Zone d’activité au PLU'],['tenant','Seul tenant de 10 ha et plus'],['rtez','Zone RTE prioritaire'],['nuc20','À moins de 20 km d’une centrale nucléaire'],['pl','Route principale à moins de 1 km'],['tel','Numéro direct connu'],['adr','Adresse de courrier'],['rec','Signal récent'],['prive','Propriétaire privé'],['pubown','Propriétaire public'],['zu','Zone constructible au PLU'],['art','Déjà bâti ou industriel'],['seul','Un seul propriétaire']];
 function saveF(){LS.set('radar-f',F)}
 function hasTel(s){return !!(s.call&&s.call.tel)}
@@ -1281,6 +1282,7 @@ function mainOwner(s){return s.own&&s.own[0]}
 function hasAdr(s){return !!(s.own||[]).find(o=>o.adr)}
 function pass(s){
   if(!F.types.includes(s.t))return false;
+  if(F.cib&&s.t==='nuc')return false;
   if(F.cib&&s.Q){if(F.cib==='ok'&&!s.Q.ok)return false;if(F.cib==='watch'&&s.Q.ok)return false}
   if(F.cib==='watch'&&!s.Q)return false;
   if(!F.vente.includes(s.v))return false;
