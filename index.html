@@ -1903,7 +1903,7 @@ async function boot(){
   if(T)SITES.forEach(s=>{s.ask=T.ask[s.t]||[];s.src=(s.src||[]).map(i=>typeof i==='number'?T.src[i]:i);if(!s.mai&&s.insee&&T.mai[s.insee])s.mai=T.mai[s.insee];
     if(s.c2m&&s.mai)s.call2={who:s.mai.nom,role:'service urbanisme ou développement économique : la mairie sait qui détient le terrain et ce qui s’y prépare',tel:s.mai.tel,src:'Annuaire de l’administration (service-public.fr), lu le '+frdate(D.gen)};
     if(typeof s.ver==='number')s.ver=T.ver[s.ver]});
-  const [EN,NUCS]=await Promise.all([loadEnrich(D.__key),loadNuc()]);SITES.push(...NUCS);applyEnrich(EN,NUCS);D.enrich=EN&&EN.gen;
+  const [EN,NUCS]=await Promise.all([loadEnrich(D.__key),loadNuc()]);SITES.push(...NUCS);{const BAIL=new Set(['C1203','C1220','C122','P73','C165','C159','C175','C182','C1781','C1809','C503','C509','C533','C1713','P83','T491','C434','P180','C631','C636','C647','W11','C651','C660','C712','T326','S2','C795','P129','C797','C802','C1284','C874','P153','P71','P90','W15','C908','C973','N7','C974','W5','C1005','C1151','C1153','T177','C1240','L5','T89','C1243','P169','P119','C1351','C1354','W4','C1353','W2','C1357','W1','C1363','C1365','C1383','C1396','C1386','W14','C1393','C1404','C1410','W3','C1411','C1414','C1831','C1858','C1444','C1470','C1468','C1489','C1523','P172','W21','C1945','C1922','C1912','C1908','C1558','C1574']);for(let i=SITES.length-1;i>=0;i--)if(BAIL.has(SITES[i].id))SITES.splice(i,1)}applyEnrich(EN,NUCS);D.enrich=EN&&EN.gen;
   byId=Object.fromEntries(SITES.map(s=>[s.id,s]));
   $('gen').textContent='Campus IA 100 MW · données du '+frdate(D.gen);
   await initDb();openApp();
